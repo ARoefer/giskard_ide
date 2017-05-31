@@ -1,0 +1,17 @@
+<library path="lib/libgiskard_sim">
+	<class name="Giskard Simulation Panel"
+		   type="giskard_sim::GiskardSimPanel"
+		   base_class_type="rviz::Panel">
+		<description>
+			A panel to facilitate quick controller development and testing using the giskard framework.
+		</description>
+	</class>
+	<class name="giskard_sim/RobotModel"
+		   type="giskard_sim::RobotModelDisplay"
+		   base_class_type="rviz::Display">
+		<description>
+			A robot model display derived from the standard robot model. The original does not allow a urdf reload to be triggered by external code - hence this implementation.
+		</description>
+	</class>
+
+</library>

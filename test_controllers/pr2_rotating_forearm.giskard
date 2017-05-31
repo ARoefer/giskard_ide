@@ -1,0 +1,44 @@
+scope = {
+	unitX = vec3(1,0,0);
+	unitY = vec3(0,1,0);
+	unitZ = vec3(0,0,1);
+
+	# Joint input
+	j_forearm_roll_l  = inputJoint("l_forearm_roll_joint");
+	j_wrist_roll_l    = inputJoint("l_wrist_roll_joint");
+	j_forearm_roll_r  = inputJoint("r_forearm_roll_joint");
+	j_wrist_roll_r    = inputJoint("r_wrist_roll_joint");
+
+	# Limits, weights and the like
+	negVelLimitTorso = -0.02;
+	posVelLimitTorso =  0.02;
+	negVelLimitArm   = -0.6;
+	posVelLimitArm   =  0.6;
+
+	weightTorso = 0.001;
+	weightArm   = 0.001;
+
+	speed = 0.2;
+
+	weightPositionGoal = 1;
+	weightRotationGoal = 4;
+	weightCollisionControl = 1000
+}
+
+controllableConstraints = {
+	controllableConstraint(negVelLimitArm, posVelLimitArm, weightArm, "r_forearm_roll_joint");
+	controllableConstraint(negVelLimitArm, posVelLimitArm, weightArm, "r_wrist_roll_joint");
+	controllableConstraint(negVelLimitArm, posVelLimitArm, weightArm, "l_forearm_roll_joint");
+	controllableConstraint(negVelLimitArm, posVelLimitArm, weightArm, "l_wrist_roll_joint")
+}
+
+softConstraints = {
+	softConstraint(speed, speed, 1, j_forearm_roll_r, "right forearm roll goal");
+	softConstraint(speed, speed, 1, j_wrist_roll_r, "right wrist roll goal");
+	softConstraint(speed, speed, 1, j_forearm_roll_l, "left forearm roll goal");
+	softConstraint(speed, speed, 1, j_wrist_roll_l, "left wrist roll goal")
+}	
+
+hardConstraints = {
+	hardConstraint(-1,1,0)
+}

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="play.png">icons/ic_play_arrow_black_24dp.png</file>
+        <file alias="pause.png">icons/ic_pause_black_24dp.png</file>
+        <file alias="open_file.png">icons/ic_folder_open_black_24dp.png</file>
+        <file alias="reset.png">icons/ic_replay_black_24dp.png</file>
+    </qresource>
+</RCC>
