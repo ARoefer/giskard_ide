@@ -7,7 +7,7 @@ namespace urdf {
 	class Model;
 }
 
-namespace giskard {
+namespace giskard_core {
 	class QPController;
 }
 
@@ -52,7 +52,7 @@ namespace giskard_sim {
 		virtual void onURDFChanged(const urdf::Model* model) = 0;
 	};
 	struct IControllerListener {
-		virtual void onControllerLoaded(giskard::QPController* controller) = 0;
+		virtual void onControllerLoaded(giskard_core::QPController* controller) = 0;
 		virtual void onControllerLoadFailed(const std::string& msg) = 0;
 	};
 
@@ -89,7 +89,7 @@ namespace giskard_sim {
 		virtual AF makeControllerRelative(bool bRelative) = 0;
 		virtual AF changeControllerPath(std::string& newPath) = 0;
 		virtual AF reloadController() = 0;
-		virtual const giskard::QPController* getController() const = 0;
+		virtual const giskard_core::QPController* getController() const = 0;
 
 		virtual AF addEmptyPose() = 0;
 		virtual AF addCurrentPose() = 0;

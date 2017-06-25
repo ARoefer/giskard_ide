@@ -7,7 +7,7 @@
 #include <QErrorMessage>
 #include <QFileSystemWatcher>
 
-#include <giskard/giskard.hpp>
+#include <giskard_core/giskard_core.hpp>
 
 #include <unordered_set>
 
@@ -61,24 +61,24 @@ void ControllerWidget::useRelativePath(bool bRelative) {
     ui_->leControllerPath->setText(QString::fromStdString(pScenario->getContext()->controllerPath.path));
 }
 
-QString typeToString(giskard::Scope::InputTypes& type) {
+QString typeToString(const giskard_core::InputType& type) {
     switch(type) {
-    case giskard::Scope::Scalar:
+    case giskard_core::tScalar:
         return "scalar";
-    case giskard::Scope::Vector:
+    case giskard_core::tVector3:
         return "vec3";
-    case giskard::Scope::Rotation:
+    case giskard_core::tRotation:
         return "rot";
-    case giskard::Scope::Frame:
+    case giskard_core::tFrame:
         return "frame";
-    case giskard::Scope::Joint:
+    case giskard_core::tJoint:
         return "joint";
     default:
         return "";
     }
 }
 
-void ControllerWidget::onControllerLoaded(giskard::QPController* controller) {
+void ControllerWidget::onControllerLoaded(giskard_core::QPController* controller) {
     string resPath = resolvePath(pScenario->getContext()->controllerPath);
     QString qPath = QString::fromStdString(resPath);
     if (fileWatcher->files().isEmpty()) {
@@ -95,7 +95,7 @@ void ControllerWidget::onControllerLoaded(giskard::QPController* controller) {
     ui_->leControllerPath->setText(QString::fromStdString(pScenario->getContext()->controllerPath.path));
     ui_->chkUsePackage->setChecked(pScenario->getContext()->controllerPath.packageRelative);
 
-    vector<string> jointList = controller->get_scope().get_joint_inputs();
+    vector<string> jointList = controller->get_input_names(giskard_core::tJoint);
     unordered_set<string> jointSet(jointList.begin(), jointList.end());
 
     {
@@ -118,16 +118,16 @@ void ControllerWidget::onControllerLoaded(giskard::QPController* controller) {
         jointItems[*jIt] = pItem;
     }
 
-    map<const string, giskard::Scope::ScopeInput> inputs = controller->get_scope().get_inputs();
+    map<std::string, const giskard_core::Scope::InputPtr&> inputs = controller->get_input_map();
     int row = 0;
     ui_->twInputs->setRowCount(inputs.size() - jointList.size());
     for (auto it = inputs.begin(); it != inputs.end(); it++) {
-        if (it->second.type == giskard::Scope::Joint)
+        if (it->second->get_type() == giskard_core::tJoint)
             continue;
 
         auto iit = inputWidgets.find(it->first);
         if (iit != inputWidgets.end()) {
-            iit->second.type->setText(typeToString(it->second.type));
+            iit->second.type->setText(typeToString(it->second->get_type()));
             ui_->twInputs->setItem(row, 0, iit->second.name);
             ui_->twInputs->setItem(row, 1, iit->second.type);
             ui_->twInputs->setItem(row, 2, iit->second.value);
@@ -135,7 +135,7 @@ void ControllerWidget::onControllerLoaded(giskard::QPController* controller) {
         } else {
             STableRow newRow;
             newRow.name = new QTableWidgetItem(QString::fromStdString(it->first));
-            newRow.type = new QTableWidgetItem(typeToString(it->second.type));
+            newRow.type = new QTableWidgetItem(typeToString(it->second->get_type()));
             newRow.value = new QTableWidgetItem("lel");
             newRow.row = row;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <giskard/scope.hpp>
+#include <giskard_core/scope.hpp>
 #include <yaml-cpp/yaml.h>
 #include "giskard_sim/interfaces.h"
 
@@ -9,13 +9,13 @@ using namespace std;
 namespace giskard_sim {
 
 struct IInputAssignment : public IScenarioReference {
-		virtual giskard::Scope::InputTypes getType() const = 0;
+		virtual giskard_core::InputType getType() const = 0;
 		virtual YAML::Node toYAML() const = 0;
 };
 
 struct IScalarAssignment : public IInputAssignment {
-	giskard::Scope::InputTypes getType() const {
-		return giskard::Scope::Scalar;
+	giskard_core::InputType getType() const {
+		return giskard_core::tScalar;
         }
 
 	virtual double getValue() = 0;
@@ -69,8 +69,8 @@ private:
 };
 
 struct IVectorAssignment : public IInputAssignment {
-	giskard::Scope::InputTypes getType() const {
-		return giskard::Scope::Vector;
+	giskard_core::InputType getType() const {
+		return giskard_core::tVector3;
 	};
 
 	virtual Eigen::Vector3d getValue() = 0;
@@ -155,8 +155,8 @@ private:
 };
 
 struct IRotationAssignment : public IInputAssignment {
-	giskard::Scope::InputTypes getType() const {
-		return giskard::Scope::Rotation;
+	giskard_core::InputType getType() const {
+		return giskard_core::tRotation;
 	}
 
 	virtual Eigen::Quaterniond getValue() = 0;
@@ -194,8 +194,8 @@ private:
 };
 
 struct IFrameAssignment : public IInputAssignment {
-	giskard::Scope::InputTypes getType() const {
-		return giskard::Scope::Frame;
+	giskard_core::InputType getType() const {
+		return giskard_core::tFrame;
 	}
 
 	virtual Eigen::Affine3d getValue() = 0;

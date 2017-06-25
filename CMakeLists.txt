@@ -56,7 +56,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
   rviz
-  giskard
+  giskard_core
   iai_naive_kinematics_sim
   tf
   tf_conversions

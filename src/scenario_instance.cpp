@@ -3,7 +3,7 @@
 
 #include <iai_naive_kinematics_sim/SetJointState.h>
 
-#include <giskard/giskard_parser.hpp>
+#include <giskard_core/giskard_parser.hpp>
 #include <tf_conversions/tf_eigen.h>
 
 namespace giskard_sim {
@@ -149,13 +149,13 @@ AF ScenarioInstance::changeControllerPath(std::string& newPath) {
 
 AF ScenarioInstance::loadController() {
 	string path = resolvePath(context.controllerPath);
-	giskard::QPControllerSpec spec;
+	giskard_core::QPControllerSpec spec;
     string msg = "Error while parsing '" + path + "':\n"; 
 	
 	if (path.find(".yaml") != string::npos) {
 		try {
 	        YAML::Node node = YAML::LoadFile(path);
-	        spec = node.as<giskard::QPControllerSpec>();
+	        spec = node.as<giskard_core::QPControllerSpec>();
     	} catch (const YAML::Exception& e) {
             notifyLoadControllerFailed(msg + e.what());
             return AF(AF::Failure, msg + e.what());
@@ -172,19 +172,19 @@ AF ScenarioInstance::loadController() {
 			fileStr.assign((std::istreambuf_iterator<char>(t)),
 			            std::istreambuf_iterator<char>());
 
-			giskard::GiskardLangParser glParser;
+			giskard_core::GiskardLangParser glParser;
 			spec = glParser.parseQPController(fileStr);
-		} catch (giskard::GiskardLangParser::EOSException e) {
+		} catch (giskard_core::GiskardLangParser::EOSException e) {
             notifyLoadControllerFailed(msg + e.what());
 			return AF(AF::Failure, msg + e.what()); 
-		} catch (giskard::GiskardLangParser::ParseException e) {
+		} catch (giskard_core::GiskardLangParser::ParseException e) {
             notifyLoadControllerFailed(msg + e.what());
 			return AF(AF::Failure, msg + e.what());
 		}            
 	}
 
 	try {
-		controller = giskard::generate(spec);
+		controller = giskard_core::generate(spec);
 	} catch (std::exception e) {
         notifyLoadControllerFailed(msg + e.what());
 		return AF(AF::Failure, msg + e.what()); 
@@ -227,7 +227,7 @@ AF ScenarioInstance::addCurrentPose() {
     SPose newPose;
     newPose.name = newPoseName + std::to_string(counter);
     newPose.robotName = urdfModel.getName();
-    vector<string> joints = controller.get_scope().get_joint_inputs();
+    vector<string> joints = controller.get_input_names(giskard_core::tJoint);
     unordered_set<string> jointSet(joints.begin(), joints.end());
     for (size_t i = 0; i < js->name.size(); i++) {
         if (jointSet.find(js->name[i]) != jointSet.end()) {

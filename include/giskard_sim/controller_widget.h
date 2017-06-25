@@ -33,7 +33,7 @@ public:
   ~ControllerWidget();
 
   void setScenario(IScenarioInstance* _pScenario);
-  void onControllerLoaded(giskard::QPController* controller);
+  void onControllerLoaded(giskard_core::QPController* controller);
   void onControllerLoadFailed(const std::string& msg);
 
 protected:

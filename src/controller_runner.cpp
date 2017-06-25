@@ -1,6 +1,6 @@
 #include "giskard_sim/controller_runner.h"
 
-#include <giskard/giskard.hpp>
+#include <giskard_core/giskard_core.hpp>
 
 namespace giskard_sim {
 
@@ -18,12 +18,12 @@ namespace giskard_sim {
 		scenario->addControllerListener(this);
 	}
 
-	void ControllerRunner::onControllerLoaded(giskard::QPController* _controller) {
+	void ControllerRunner::onControllerLoaded(giskard_core::QPController* _controller) {
 		valid = true;
 		initialized = false;
 		controller = _controller;
-		state = Eigen::VectorXd::Zero(controller->get_scope().get_input_size());
-		controllerInputs = controller->get_scope().get_inputs();
+		state = Eigen::VectorXd::Zero(controller->get_input_size());
+		controllerInputs = controller->get_input_map();
 	}
 
 	void ControllerRunner::onControllerLoadFailed(const std::string& msg) {
@@ -39,8 +39,8 @@ namespace giskard_sim {
 
 		for (size_t i = 0; i < jointState.name.size(); i++) {
 			auto it = controllerInputs.find(jointState.name[i]);
-			if (it != controllerInputs.end() && it->second.type == giskard::Scope::Joint) {
-				controller->get_scope().set_input(jointState.name[i], jointState.position[i], state);
+			if (it != controllerInputs.end() && it->second->get_type() == giskard_core::tJoint) {
+				controller->set_input(state, jointState.name[i], jointState.position[i]);
 			}
 		}
 
@@ -48,19 +48,19 @@ namespace giskard_sim {
 			for (auto it = context->inputAssignments.begin(); it != context->inputAssignments.end(); it++) {
 				auto iit = controllerInputs.find(it->first);
 				if (iit != controllerInputs.end()) {
-					if (iit->second.type == it->second->getType()) {
-						switch(iit->second.type) {
-							case giskard::Scope::Scalar:
-							controller->get_scope().set_input(it->first, static_cast<IScalarAssignment*>(it->second.get())->getValue(), state);
+					if (iit->second->get_type() == it->second->getType()) {
+						switch(iit->second->get_type()) {
+							case giskard_core::tScalar:
+							controller->set_input(state, it->first, static_cast<IScalarAssignment*>(it->second.get())->getValue());
 							break;
-							case giskard::Scope::Vector:
-							controller->get_scope().set_input(it->first, static_cast<IVectorAssignment*>(it->second.get())->getValue(), state);
+							case giskard_core::tVector3:
+							controller->set_input(state, it->first, static_cast<IVectorAssignment*>(it->second.get())->getValue());
 							break;
-							case giskard::Scope::Rotation:
-							controller->get_scope().set_input(it->first, static_cast<IRotationAssignment*>(it->second.get())->getValue(), state);
+							case giskard_core::tRotation:
+							controller->set_input(state, it->first, static_cast<IRotationAssignment*>(it->second.get())->getValue());
 							break;
-							case giskard::Scope::Frame:
-							controller->get_scope().set_input(it->first, static_cast<IFrameAssignment*>(it->second.get())->getValue(), state);
+							case giskard_core::tFrame:
+							controller->set_input(state, it->first, static_cast<IFrameAssignment*>(it->second.get())->getValue());
 							break;
 							default:
 							AF(AF::Failure, "Setting of joint inputs via query is not allowed.");
@@ -85,18 +85,17 @@ namespace giskard_sim {
 		}
 
         if (controller->update(state, nWSR)) {
-            const Eigen::VectorXd& command = controller->get_command();
-			const std::vector<std::string>& cjoints =  controller->get_controllable_names();
+            auto commands = controller->get_command_map();
 
 			sensor_msgs::JointState cmd;
-            cmd.name.reserve(cjoints.size());
-            cmd.position.reserve(cjoints.size());
-            cmd.velocity.reserve(cjoints.size());
-            cmd.effort.reserve(cjoints.size());
+            cmd.name.reserve(commands.size());
+            cmd.position.reserve(commands.size());
+            cmd.velocity.reserve(commands.size());
+            cmd.effort.reserve(commands.size());
 
-            for (size_t i = 0; i < cjoints.size(); i++) {
-				cmd.name.push_back(cjoints[i]);
-				cmd.velocity.push_back(command[i]);
+            for (auto it = commands.begin(); it != commands.end(); it++) {
+				cmd.name.push_back(it->first);
+				cmd.velocity.push_back(it->second);
                 cmd.position.push_back(0);
                 cmd.effort.push_back(0);
 			}

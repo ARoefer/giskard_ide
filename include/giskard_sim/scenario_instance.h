@@ -2,7 +2,7 @@
 
 #include <urdf/model.h>
 #include <ros/ros.h>
-#include "giskard/giskard.hpp"
+#include "giskard_core/giskard_core.hpp"
 #include "giskard_sim/controller_runner.h"
 
 #include <tf/transform_listener.h>
@@ -32,7 +32,7 @@ namespace giskard_sim {
                     return reloadResult;
                 return resetSim();
         };
-        const giskard::QPController* getController() const {
+        const giskard_core::QPController* getController() const {
         	return &controller;
         }
 
@@ -121,7 +121,7 @@ namespace giskard_sim {
 		sensor_msgs::JointState lastJointState;
 		ControllerRunner runner;
 		ros::NodeHandle nh;
-		giskard::QPController controller;
+		giskard_core::QPController controller;
 		urdf::Model urdfModel;
 		SScenarioContext context;
 		ros::Publisher cmdPublisher;
