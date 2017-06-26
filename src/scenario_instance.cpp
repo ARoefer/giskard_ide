@@ -6,7 +6,13 @@
 #include <giskard_core/giskard_parser.hpp>
 #include <tf_conversions/tf_eigen.h>
 
+using namespace Eigen;
+
 namespace giskard_sim {
+
+// INPORTANT FOR SINGELTON WORK AROUND
+ScenarioInstance* ScenarioInstance::_currentInstance = 0;
+
 ScenarioInstance::ScenarioInstance() 
 : tfListener(nh)
 , scenarioListeners()
@@ -15,12 +21,22 @@ ScenarioInstance::ScenarioInstance()
 , errorListeners()
 , poseListeners()
 , runner(cmdPublisher)
+, intServer("giskard_marker_server")
 { 
+    if(_currentInstance)
+        ROS_ERROR("There should always only be one instance of giskard_sim::ScenarioInstance!");
+	_currentInstance = this;
+
 	cmdPublisher = nh.advertise<sensor_msgs::JointState>(context.cmdTopic, 1);
 	jsSubscriber = nh.subscribe(context.jsTopic, 1, &ScenarioInstance::jointStateCB, this);
     updateTimer = nh.createTimer(ros::Duration(0.04), &ScenarioInstance::update, this);
     updateTimer.stop();
     runner.setScenario(this);
+}
+
+ScenarioInstance::~ScenarioInstance() {
+	_currentInstance = 0;
+    ROS_INFO("ScenarioInstance deleted");
 }
 
 void ScenarioInstance::update(const ros::TimerEvent& event) {
@@ -383,6 +399,51 @@ Eigen::Affine3d ScenarioInstance::getObjectTransform(std::string object, std::st
 	Eigen::Affine3d out = Eigen::Affine3d::Identity();
 	tf::transformTFToEigen(temp, out);
 	return out;
+}
+
+AF ScenarioInstance::addSceneObject(std::string name) {
+	return addSceneObject(name, "odom_combined");
+}
+
+AF ScenarioInstance::addSceneObject(std::string name, std::string parent) {
+	auto it = context.objects.find(name);
+	if (it == context.objects.end()) {
+		visualization_msgs::InteractiveMarker intMarker;
+		intMarker.header = rosHeader(parent, ros::Time(0));
+		intMarker.name = name;
+
+		visualization_msgs::Marker visual;
+		visual.type = visualization_msgs::Marker::CUBE;
+		visual.header = rosHeader(name, ros::Time(0));
+		visual.scale =  rosVec3(Vector3d(1,1,1) * 0.2);
+		visual.color = rosColorCyan();
+
+		visualization_msgs::InteractiveMarkerControl ctrl;
+		ctrl.always_visible = true;
+		ctrl.markers.push_back(visual);
+		intMarker.controls.push_back(ctrl);
+		interactiveMarkers[name] = intMarker;
+
+        intServer.insert(intMarker, &ScenarioInstance::_processInteractiveMarkerFeedback);
+
+		// 'commit' changes and send to all clients
+        intServer.applyChanges();
+	} else {
+
+	}
+    return AF();
+}
+
+void ScenarioInstance::processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback )
+{
+  ROS_INFO_STREAM( feedback->marker_name << " is now at "
+      << feedback->pose.position.x << ", " << feedback->pose.position.y
+      << ", " << feedback->pose.position.z );
+}
+
+void ScenarioInstance::_processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback) {
+    if (ScenarioInstance::_currentInstance)
+        ScenarioInstance::_currentInstance->processInteractiveMarkerFeedback(feedback);
 }
 
 //////////////////////////// Listeners and Notifications /////////////////////////////////////////
