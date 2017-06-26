@@ -39,6 +39,10 @@ void VectorWidget::setVector(Eigen::Vector3d vector) {
   x = vector[0];
   y = vector[1];
   z = vector[2];
+
+  ui_->leX->setText(QString::number(x));
+  ui_->leY->setText(QString::number(y));
+  ui_->leZ->setText(QString::number(z));
 }
 
 void VectorWidget::setLabelTexts(QString lX, QString lY, QString lZ) {

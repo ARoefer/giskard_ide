@@ -36,6 +36,8 @@ public:
 protected:
   Ui::SimControls *ui_;
 
+  void updatePlayPauseBtn(bool bPlay);
+
 private:
   IScenarioInstance* pScenario;
 
@@ -47,8 +49,7 @@ private Q_SLOTS:
 
   void setStartPose(QString pose);
 
-  void playSim();
-  void pauseSim();
+  void toggleSim();
   void resetSim();
 
   // your custom stuff

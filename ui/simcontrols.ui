@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>254</width>
-    <height>120</height>
+    <width>341</width>
+    <height>92</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -19,13 +19,13 @@
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>120</height>
+    <height>160000</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1,1">
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>
    </property>
@@ -66,103 +66,106 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QPushButton" name="btnReset">
-       <property name="text">
-        <string>Play</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources/giskard_sim.qrc">
-         <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <property name="default">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="btnPlayPause">
+         <property name="text">
+          <string>Play</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/giskard_sim.qrc">
+           <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="default">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnReset">
+         <property name="text">
+          <string>Reset</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/giskard_sim.qrc">
+           <normaloff>:/icons/reset.png</normaloff>:/icons/reset.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="btnPlay">
-       <property name="text">
-        <string>Pause</string>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="topMargin">
+        <number>0</number>
        </property>
-       <property name="icon">
-        <iconset resource="../resources/giskard_sim.qrc">
-         <normaloff>:/icons/pause.png</normaloff>:/icons/pause.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnPause">
-       <property name="text">
-        <string>Reset</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources/giskard_sim.qrc">
-         <normaloff>:/icons/reset.png</normaloff>:/icons/reset.png</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QCheckBox" name="chkUseSimTime">
-       <property name="text">
-        <string>Use Simulated Timestep</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="leSimTime">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="inputMethodHints">
-        <set>Qt::ImhNone</set>
-       </property>
-       <property name="text">
-        <string>0.02</string>
-       </property>
-       <property name="maxLength">
-        <number>512</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelUseSimTime">
-       <property name="text">
-        <string>s</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLabel" name="labelStartPose">
-       <property name="text">
-        <string>Start Pose</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboxStartPoses">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="labelStartPose">
+           <property name="text">
+            <string>Start Pose</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboxStartPoses">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="chkUseSimTime">
+           <property name="text">
+            <string>Use Simulated Timestep</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leSimTime">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="inputMethodHints">
+            <set>Qt::ImhNone</set>
+           </property>
+           <property name="text">
+            <string>0.02</string>
+           </property>
+           <property name="maxLength">
+            <number>512</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelUseSimTime">
+           <property name="text">
+            <string>s</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -173,62 +176,14 @@
  </resources>
  <connections>
   <connection>
-   <sender>btnReset</sender>
-   <signal>clicked()</signal>
-   <receiver>SimControls</receiver>
-   <slot>playSim()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>80</x>
-     <y>47</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>88</x>
-     <y>103</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnPlay</sender>
-   <signal>clicked()</signal>
-   <receiver>SimControls</receiver>
-   <slot>pauseSim()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>166</x>
-     <y>47</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>186</x>
-     <y>105</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnPause</sender>
-   <signal>clicked()</signal>
-   <receiver>SimControls</receiver>
-   <slot>resetSim()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>252</x>
-     <y>47</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>339</x>
-     <y>16</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>chkUseSimTime</sender>
    <signal>toggled(bool)</signal>
    <receiver>SimControls</receiver>
    <slot>useTimeStep(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>33</x>
-     <y>85</y>
+     <x>124</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
      <x>340</x>
@@ -243,12 +198,12 @@
    <slot>setStartPose(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>252</x>
-     <y>132</y>
+     <x>337</x>
+     <y>48</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
-     <y>159</y>
+     <y>91</y>
     </hint>
    </hints>
   </connection>
@@ -259,12 +214,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
-     <y>85</y>
+     <x>151</x>
+     <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>239</x>
-     <y>86</y>
+     <x>324</x>
+     <y>79</y>
     </hint>
    </hints>
   </connection>
@@ -275,23 +230,54 @@
    <slot>timeStepEdited()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>233</x>
-     <y>66</y>
+     <x>324</x>
+     <y>79</y>
     </hint>
     <hint type="destinationlabel">
-     <x>379</x>
+     <x>340</x>
      <y>81</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnReset</sender>
+   <signal>clicked()</signal>
+   <receiver>SimControls</receiver>
+   <slot>resetSim()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>50</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnPlayPause</sender>
+   <signal>clicked()</signal>
+   <receiver>SimControls</receiver>
+   <slot>toggleSim()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>29</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>35</x>
+     <y>142</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>playSim()</slot>
-  <slot>pauseSim()</slot>
   <slot>resetSim()</slot>
   <slot>useTimeStep(bool)</slot>
   <slot>setTimeStep(QString)</slot>
   <slot>setStartPose(QString)</slot>
   <slot>timeStepEdited()</slot>
+  <slot>toggleSim()</slot>
  </slots>
 </ui>

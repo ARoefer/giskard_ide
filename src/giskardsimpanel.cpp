@@ -64,7 +64,7 @@ void GiskardSimPanel::load( const rviz::Config& config ) {
 
 void GiskardSimPanel::save( rviz::Config config ) const {
     rviz::Panel::save( config );
-    string path = ui_->scenarioInfoWidget->getPath();
+    string path = "";//ui_->scenarioInfoWidget->getPath();
     if (path.empty()) {
         path = QDir::homePath().toStdString();
         path += "/.rviz/last_giskard_scenario.yaml";

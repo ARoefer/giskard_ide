@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>440</width>
     <height>48</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -29,18 +35,36 @@
    <item>
     <layout class="QHBoxLayout" name="Numbers">
      <item>
-      <widget class="QLabel" name="labelX">
-       <property name="text">
-        <string>X</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="xBlock">
        <item>
-        <widget class="QLineEdit" name="leX">
+        <widget class="QLabel" name="labelX">
+         <property name="text">
+          <string>X</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="giskard_sim::LineEdit" name="leX">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>0</string>
+         </property>
+         <property name="frame">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -59,9 +83,24 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="leY">
+        <widget class="giskard_sim::LineEdit" name="leY">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -80,9 +119,24 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="leZ">
+        <widget class="giskard_sim::LineEdit" name="leZ">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>0</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -107,6 +161,12 @@
       </property>
       <item>
        <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Scale uniformly</string>
         </property>
@@ -121,6 +181,12 @@
       </item>
       <item>
        <widget class="QSlider" name="sliderScale">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maximum">
          <number>20</number>
         </property>
@@ -162,56 +228,15 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>giskard_sim::LineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>giskard_sim/line_edit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
-  <connection>
-   <sender>leX</sender>
-   <signal>editingFinished()</signal>
-   <receiver>VectorWidget</receiver>
-   <slot>onXChanged()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>90</x>
-     <y>19</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>72</x>
-     <y>190</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>leY</sender>
-   <signal>editingFinished()</signal>
-   <receiver>VectorWidget</receiver>
-   <slot>onYChanged()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>221</x>
-     <y>18</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>206</x>
-     <y>133</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>leZ</sender>
-   <signal>editingFinished()</signal>
-   <receiver>VectorWidget</receiver>
-   <slot>onZChanged()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>351</x>
-     <y>14</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>358</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>sliderScale</sender>
    <signal>valueChanged(int)</signal>
@@ -257,6 +282,54 @@
     <hint type="destinationlabel">
      <x>173</x>
      <y>173</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leZ</sender>
+   <signal>editingFinished()</signal>
+   <receiver>VectorWidget</receiver>
+   <slot>onZChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>351</x>
+     <y>14</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leX</sender>
+   <signal>editingFinished()</signal>
+   <receiver>VectorWidget</receiver>
+   <slot>onXChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>90</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>72</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leY</sender>
+   <signal>editingFinished()</signal>
+   <receiver>VectorWidget</receiver>
+   <slot>onYChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>221</x>
+     <y>18</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>206</x>
+     <y>133</y>
     </hint>
    </hints>
   </connection>

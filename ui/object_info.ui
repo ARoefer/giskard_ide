@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>362</width>
     <height>264</height>
    </rect>
   </property>
@@ -44,7 +44,14 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="rviz::EditableComboBox" name="cbParentFrame"/>
+    <widget class="rviz::EditableComboBox" name="cbParentFrame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
@@ -54,7 +61,14 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QComboBox" name="cbVisual"/>
+    <widget class="QComboBox" name="cbVisual">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_4">
@@ -81,7 +95,14 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="giskard_sim::VectorWidget" name="vwScale" native="true"/>
+    <widget class="giskard_sim::VectorWidget" name="vwScale" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_6">
@@ -91,7 +112,14 @@
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="giskard_sim::VectorWidget" name="vwPosition" native="true"/>
+    <widget class="giskard_sim::VectorWidget" name="vwPosition" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="7" column="0">
     <widget class="QLabel" name="label_7">
@@ -101,7 +129,14 @@
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="giskard_sim::VectorWidget" name="vwRotation" native="true"/>
+    <widget class="giskard_sim::VectorWidget" name="vwRotation" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="8" column="0">
     <widget class="QLabel" name="label_8">
@@ -113,7 +148,7 @@
    <item row="8" column="1">
     <widget class="QPlainTextEdit" name="teProperties">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
+      <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>

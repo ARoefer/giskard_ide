@@ -40,6 +40,7 @@ qt4_wrap_cpp(MOC_FILES
     include/${PROJECT_NAME}/object_info_widget.h
     include/${PROJECT_NAME}/color_editor.h
     include/${PROJECT_NAME}/scene_widget.h
+    include/${PROJECT_NAME}/line_edit.h
 )
 qt4_wrap_ui(QT_FORMS_HPP ${QT_FORMS})
 qt4_add_resources(QT_RESOURCES ${QT_RESS})

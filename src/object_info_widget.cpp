@@ -20,7 +20,7 @@ ObjectInfoWidget::ObjectInfoWidget( QWidget* parent )
   ui_->vwPosition->showScaleSlider(false);
   ui_->vwRotation->showScaleSlider(false);
   ui_->cbUseMaterial->setEnabled(false);
-
+  ui_->vwRotation->setLabelTexts(QString("R"),QString("P"),QString("Y"));
   ui_->vwScale->setVector(Eigen::Vector3d(1,1,1));
 
   ui_->cbVisual->addItem("Cube",     visualization_msgs::Marker::CUBE);

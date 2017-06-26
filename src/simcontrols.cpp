@@ -33,6 +33,7 @@ SimControls::~SimControls() {
     ui_->cboxStartPoses->setCurrentIndex(ui_->cboxStartPoses->findData(qPose));
     ui_->chkUseSimTime->setChecked(context->simSettings.bUseTimeStep);
     ui_->leSimTime->setText(QString::number(context->simSettings.timeStep));
+    updatePlayPauseBtn(pScenario->getContext()->simSettings.bRunning);
   }
 
   void SimControls::onPoseAdded(std::string pose) {
@@ -85,12 +86,22 @@ SimControls::~SimControls() {
     ui_->cboxStartPoses->setCurrentIndex(ui_->cboxStartPoses->findData(qPose));
   }
 
-  void SimControls::playSim() {
-    pScenario->setSimState(true);
+  void SimControls::updatePlayPauseBtn(bool bPlay) {
+      if (bPlay) {
+          ui_->btnPlayPause->setText("Pause");
+          ui_->btnPlayPause->setIcon(QIcon(":/icons/ic_pause_black_24dp.png"));
+      } else {
+          ui_->btnPlayPause->setText("Play");
+          ui_->btnPlayPause->setIcon(QIcon(":/icons/ic_play_black_24dp.png"));
+      }
   }
-  void SimControls::pauseSim() {
-    pScenario->setSimState(false);
+
+  void SimControls::toggleSim() {
+    if (pScenario->setSimState(!pScenario->getContext()->simSettings.bRunning)) {
+        updatePlayPauseBtn(pScenario->getContext()->simSettings.bRunning);
+    }
   }
+
   void SimControls::resetSim() {
     pScenario->resetSim();
   }
