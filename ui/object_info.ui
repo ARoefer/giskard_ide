@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ObjectInfoWidget</class>
+ <widget class="QWidget" name="ObjectInfoWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>264</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Object Name</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="leName"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Parent Frame</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="rviz::EditableComboBox" name="cbParentFrame"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Visual Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="cbVisual"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="giskard_sim::ColorEditor" name="leColor"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QCheckBox" name="cbUseMaterial">
+     <property name="text">
+      <string>Use Mesh Material</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Scale</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="giskard_sim::VectorWidget" name="vwScale" native="true"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Position</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="giskard_sim::VectorWidget" name="vwPosition" native="true"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Rotation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="giskard_sim::VectorWidget" name="vwRotation" native="true"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Properties</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QPlainTextEdit" name="teProperties">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>rviz::EditableComboBox</class>
+   <extends>QComboBox</extends>
+   <header>rviz/properties/editable_combo_box.h</header>
+  </customwidget>
+  <customwidget>
+   <class>giskard_sim::ColorEditor</class>
+   <extends>QLineEdit</extends>
+   <header>giskard_sim/color_editor.h</header>
+  </customwidget>
+  <customwidget>
+   <class>giskard_sim::VectorWidget</class>
+   <extends>QWidget</extends>
+   <header>giskard_sim/vector_widget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>valueChanged(Eigen::Vector3d)</signal>
+   </slots>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>vwScale</sender>
+   <signal>valueChanged(Eigen::Vector3d)</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onScaleChanged(Eigen::Vector3d)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>240</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>521</x>
+     <y>136</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vwPosition</sender>
+   <signal>valueChanged(Eigen::Vector3d)</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onPositionChanged(Eigen::Vector3d)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>146</x>
+     <y>153</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>550</x>
+     <y>166</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vwRotation</sender>
+   <signal>valueChanged(Eigen::Vector3d)</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onRotationChanged(Eigen::Vector3d)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>245</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>536</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leColor</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onColorChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>364</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>544</x>
+     <y>111</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbVisual</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onVisualChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>360</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>566</x>
+     <y>86</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbParentFrame</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onParentChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>52</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>543</x>
+     <y>44</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leName</sender>
+   <signal>editingFinished()</signal>
+   <receiver>ObjectInfoWidget</receiver>
+   <slot>onNameChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>380</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>475</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onScaleChanged(Eigen::Vector3d)</slot>
+  <slot>onPositionChanged(Eigen::Vector3d)</slot>
+  <slot>onRotationChanged(Eigen::Vector3d)</slot>
+  <slot>onColorChanged()</slot>
+  <slot>onParentChanged(QString)</slot>
+  <slot>onVisualChanged(int)</slot>
+  <slot>onNameChanged()</slot>
+ </slots>
+</ui>

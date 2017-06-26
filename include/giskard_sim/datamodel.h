@@ -47,7 +47,7 @@ namespace giskard_sim {
 		string defaultPose;
 	};
 
-	struct WorldObject {
+	struct SWorldObject {
 		string parent;
 		Eigen::Affine3d transform;
 		visualization_msgs::Marker visual;
@@ -69,6 +69,7 @@ namespace giskard_sim {
 		SSimSettings simSettings;
 		map<string, SPose> poses;
 		map<string, shared_ptr<IInputAssignment>> inputAssignments;
+		map<string, shared_ptr<SWorldObject>> objects;
 
 		// Topics
 		string jsTopic;

@@ -1,5 +1,6 @@
 #include "giskard_sim/pose_tree_widget.h"
 #include "giskard_sim/datamodel.h"
+#include "giskard_sim/decisive_double_validator.h"
 
 #include "ui_poses_widget.h"
 #include "ui_pose_joint_item.h"
@@ -43,7 +44,7 @@ PoseJointItem::PoseJointItem(PoseTreeItem* parent, string _jointName, double _po
   // set up the GUI
   ui_->setupUi(this);
 
-  ui_->leJointPos->setValidator(new QDoubleValidator(-10000.0, -10000.0, 8, this));
+  ui_->leJointPos->setValidator(new DecisiveDoubleValidator(-10000.0, -10000.0, 8, this));
 
   ui_->leJointName->setText(QString::fromStdString(jointName));
   ui_->leJointPos->setText(QString::number(position));

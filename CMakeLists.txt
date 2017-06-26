@@ -22,7 +22,10 @@ set(QT_FORMS ${PROJECT_SOURCE_DIR}/ui/simcontrols.ui
              ${PROJECT_SOURCE_DIR}/ui/poses_widget.ui
              ${PROJECT_SOURCE_DIR}/ui/pose_add_joint_item.ui
              ${PROJECT_SOURCE_DIR}/ui/pose_joint_item.ui
-             ${PROJECT_SOURCE_DIR}/ui/controller_widget.ui)
+             ${PROJECT_SOURCE_DIR}/ui/controller_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/vector_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/object_info.ui
+             ${PROJECT_SOURCE_DIR}/ui/scene_widget.ui)
 set(QT_RESS ${PROJECT_SOURCE_DIR}/resources/giskard_sim.qrc)
 
 qt4_wrap_cpp(MOC_FILES
@@ -33,6 +36,10 @@ qt4_wrap_cpp(MOC_FILES
     include/${PROJECT_NAME}/pose_tree_widget.h
     include/${PROJECT_NAME}/controller_widget.h
     include/${PROJECT_NAME}/robot_model_display.h
+    include/${PROJECT_NAME}/vector_widget.h
+    include/${PROJECT_NAME}/object_info_widget.h
+    include/${PROJECT_NAME}/color_editor.h
+    include/${PROJECT_NAME}/scene_widget.h
 )
 qt4_wrap_ui(QT_FORMS_HPP ${QT_FORMS})
 qt4_add_resources(QT_RESOURCES ${QT_RESS})
@@ -48,6 +55,9 @@ set(SRC_FILES
     src/pose_tree_widget.cpp
     src/controller_widget.cpp
     src/controller_runner.cpp
+    src/vector_widget.cpp
+    src/object_info_widget.cpp
+    src/scene_widget.cpp
     ${MOC_FILES}
 )
 

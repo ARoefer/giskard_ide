@@ -14,6 +14,28 @@ using namespace std;
 namespace giskard_sim {
 	string resolvePath(const SFilePath& fp);
 	string makePackageRelative(const string& path);
+
+	// Convenience methods
+	// ROS Colors
+	std_msgs::ColorRGBA rosColorRGBA(float r = 1.f, float g = 1.f, float b = 1.f, float a = 1.f);
+	inline std_msgs::ColorRGBA rosColorRed(float a = 1.f)    { return giskard_sim::rosColorRGBA(0.9, 0.0, 0.0, a); }
+	inline std_msgs::ColorRGBA rosColorGreen(float a = 1.f)  { return giskard_sim::rosColorRGBA(0.0, 0.9, 0.0, a); }
+	inline std_msgs::ColorRGBA rosColorBlue(float a = 1.f)   { return giskard_sim::rosColorRGBA(0.0, 0.0, 0.9, a); }
+	inline std_msgs::ColorRGBA rosColorCyan(float a = 1.f)   { return giskard_sim::rosColorRGBA(0.0, 0.9, 0.9, a); }
+	inline std_msgs::ColorRGBA rosColorPurple(float a = 1.f) { return giskard_sim::rosColorRGBA(0.9, 0.0, 0.9, a); }
+	inline std_msgs::ColorRGBA rosColorYellow(float a = 1.f) { return giskard_sim::rosColorRGBA(0.9, 0.9, 0.0, a); }
+	inline std_msgs::ColorRGBA rosColorWhite(float a = 1.f)  { return giskard_sim::rosColorRGBA(1.0, 1.0, 1.0, a); }
+	inline std_msgs::ColorRGBA rosColorBlack(float a = 1.f)  { return giskard_sim::rosColorRGBA(0.0, 0.0, 0.0, a); }
+	inline std_msgs::ColorRGBA rosColorGrey(float a = 1.f)   { return giskard_sim::rosColorRGBA(0.5, 0.5, 0.5, a); }
+
+	// Other ROS data types
+	geometry_msgs::Point rosPoint(double x, double y, double z);
+	inline geometry_msgs::Point rosPoint(Eigen::Vector3d vec) { return rosPoint(vec[0], vec[1], vec[3]); }
+
+	geometry_msgs::Vector3 rosVec3(double x, double y, double z);
+	inline geometry_msgs::Vector3 rosVec3(Eigen::Vector3d vec) { return rosVec3(vec[0], vec[1], vec[3]); }
+
+	std_msgs::Header rosHeader(std::string frame, ros::Time stamp);
 }
 
 // ----------- Encoding and decoding ROS messages using yaml-cpp ---------

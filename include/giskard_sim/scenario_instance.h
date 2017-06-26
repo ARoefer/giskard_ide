@@ -2,19 +2,26 @@
 
 #include <urdf/model.h>
 #include <ros/ros.h>
+#include <interactive_markers/interactive_marker_server.h>
+
 #include "giskard_core/giskard_core.hpp"
 #include "giskard_sim/controller_runner.h"
 
 #include <tf/transform_listener.h>
 
 #include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
 namespace giskard_sim {
 	class ScenarioInstance : public IScenarioInstance {
+        static ScenarioInstance* _currentInstance;
+        static void _processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
+
         public:
         ScenarioInstance();
+        ~ScenarioInstance();
 		AF loadFromYAML(string path);
         AF renameScenario(std::string newName);
 
@@ -78,6 +85,9 @@ namespace giskard_sim {
 			return cmdPublisher;
 		}
 
+		AF addSceneObject(std::string name);
+		AF addSceneObject(std::string name, std::string parent);
+
         virtual void update(const ros::TimerEvent& event);
 
         void jointStateCB(const sensor_msgs::JointState& js);
@@ -115,8 +125,11 @@ namespace giskard_sim {
 		virtual void notifyPosesLoaded();
 		virtual void notifyPoseRenamed(string oldName, string newName);
 
+		virtual void processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
+
 		// ====== Members ===========
 
+        interactive_markers::InteractiveMarkerServer intServer;
 
 		sensor_msgs::JointState lastJointState;
 		ControllerRunner runner;
@@ -131,6 +144,9 @@ namespace giskard_sim {
 	private:
 		AF loadController();
         AF makePathRelative(SFilePath& path, bool bRelative);
+
+
+        unordered_map<string, visualization_msgs::InteractiveMarker> interactiveMarkers;
 
 		unordered_set<IScenarioListener*> scenarioListeners;
 		unordered_set<IURDFListener*> urdfListeners;

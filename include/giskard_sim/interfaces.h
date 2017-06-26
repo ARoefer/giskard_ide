@@ -109,6 +109,9 @@ namespace giskard_sim {
 		virtual AF setSimState(bool bRunning) = 0;
 		virtual AF resetSim() = 0;
 
+		virtual AF addSceneObject(std::string name) = 0;
+		virtual AF addSceneObject(std::string name, std::string parent) = 0;
+
 		virtual double getScalarObjectProperty(std::string object, std::string property) const = 0;
 		virtual Eigen::Vector3d getVectorObjectProperty(std::string object, std::string property) const = 0;
 		virtual Eigen::Affine3d getObjectTransform(std::string object, std::string target) const = 0;

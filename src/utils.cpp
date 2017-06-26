@@ -36,4 +36,36 @@ namespace giskard_sim {
 
 		throw domain_error("Can't convert '" + path + "' to be package relative. No part of the path matches a package name.");
 	}
+
+    std_msgs::ColorRGBA rosColorRGBA(float r, float g, float b, float a) {
+		std_msgs::ColorRGBA out;
+        out.r = r;
+        out.g = g;
+        out.b = b;
+		out.a = a;
+		return out;
+	}
+
+	geometry_msgs::Point rosPoint(double x, double y, double z) {
+		geometry_msgs::Point out;
+		out.x = x;
+		out.y = y;
+		out.z = z;
+		return out;
+	}
+
+	geometry_msgs::Vector3 rosVec3(double x, double y, double z) {
+		geometry_msgs::Vector3 out;
+		out.x = x;
+		out.y = y;
+		out.z = z;
+		return out;
+	}
+
+	std_msgs::Header rosHeader(std::string frame, ros::Time stamp) {
+		std_msgs::Header header;
+		header.frame_id = frame;
+		header.stamp = stamp;
+		return header;
+	}
 }
