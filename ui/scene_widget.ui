@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
+    <width>382</width>
     <height>300</height>
    </rect>
   </property>
@@ -125,6 +125,19 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -136,5 +149,59 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>SceneWidget</receiver>
+   <slot>createObject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>67</x>
+     <y>460</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SceneWidget</receiver>
+   <slot>deleteObject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>224</x>
+     <y>389</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listWidget</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>SceneWidget</receiver>
+   <slot>selectedObjectChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>168</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>152</x>
+     <y>459</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>createObject()</slot>
+  <slot>deleteObject()</slot>
+  <slot>selectedObjectChanged()</slot>
+ </slots>
 </ui>

@@ -25,7 +25,12 @@ set(QT_FORMS ${PROJECT_SOURCE_DIR}/ui/simcontrols.ui
              ${PROJECT_SOURCE_DIR}/ui/controller_widget.ui
              ${PROJECT_SOURCE_DIR}/ui/vector_widget.ui
              ${PROJECT_SOURCE_DIR}/ui/object_info.ui
-             ${PROJECT_SOURCE_DIR}/ui/scene_widget.ui)
+             ${PROJECT_SOURCE_DIR}/ui/scene_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/create_object_dialog.ui
+             ${PROJECT_SOURCE_DIR}/ui/input_scalar_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/input_vector_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/input_rotation_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/input_frame_widget.ui)
 set(QT_RESS ${PROJECT_SOURCE_DIR}/resources/giskard_sim.qrc)
 
 qt4_wrap_cpp(MOC_FILES
@@ -41,7 +46,13 @@ qt4_wrap_cpp(MOC_FILES
     include/${PROJECT_NAME}/color_editor.h
     include/${PROJECT_NAME}/scene_widget.h
     include/${PROJECT_NAME}/line_edit.h
+    include/${PROJECT_NAME}/create_object_dialog.h
+    include/${PROJECT_NAME}/input_scalar_widget.h
+    include/${PROJECT_NAME}/input_vector_widget.h
+    include/${PROJECT_NAME}/input_rotation_widget.h
+    include/${PROJECT_NAME}/input_frame_widget.h
 )
+
 qt4_wrap_ui(QT_FORMS_HPP ${QT_FORMS})
 qt4_add_resources(QT_RESOURCES ${QT_RESS})
 
@@ -59,6 +70,12 @@ set(SRC_FILES
     src/vector_widget.cpp
     src/object_info_widget.cpp
     src/scene_widget.cpp
+    src/create_object_dialog.cpp
+    src/input_scalar_widget.cpp
+    src/input_vector_widget.cpp
+    src/input_rotation_widget.cpp
+    src/input_frame_widget.cpp
+    src/input_assignments.cpp
     ${MOC_FILES}
 )
 
@@ -71,6 +88,7 @@ find_package(catkin REQUIRED COMPONENTS
   iai_naive_kinematics_sim
   tf
   tf_conversions
+  eigen_conversions
 )
 
 catkin_package(

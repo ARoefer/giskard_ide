@@ -42,6 +42,7 @@ GiskardSimPanel::GiskardSimPanel( QWidget* parent )
   ui_->posesWidget->setScenario(&scenario);
   ui_->controllerWidget->setScenario(&scenario);
   ui_->controlWidget->setScenario(&scenario);
+  ui_->sceneWidget->setScenario(&scenario);
 }
 
 GiskardSimPanel::~GiskardSimPanel() {
@@ -101,18 +102,27 @@ void GiskardSimPanel::onInitialize() {
 
     if (!intDisplay) {
         intDisplay = dynamic_cast<rviz::InteractiveMarkerDisplay*>(vis_manager_->createDisplay("rviz/InteractiveMarkers", intName, true));
+        //intDisplay->setMar(QString("/giskard_marker_server/update"));
     }
 }
 
 void GiskardSimPanel::onLoadScenarioFailed(const std::string& msg) {
+  ui_->tabWidget->setCurrentWidget(ui_->teLog);
   ui_->teLog->append(QString::fromStdString(msg + "\n"));
 }
 
 void GiskardSimPanel::onLoadURDFFailed(const std::string& msg) {
-  ui_->teLog->append(QString::fromStdString(msg + "\n"));
+  ui_->tabWidget->setCurrentWidget(ui_->teLog);
+    ui_->teLog->append(QString::fromStdString(msg + "\n"));
 }
 void GiskardSimPanel::onLoadControllerFailed(const std::string& msg) {
-  ui_->teLog->append(QString::fromStdString(msg + "\n"));
+  ui_->tabWidget->setCurrentWidget(ui_->teLog);
+    ui_->teLog->append(QString::fromStdString(msg + "\n"));
+}
+
+void GiskardSimPanel::onRunControllerFailed(const std::string& msg) {
+  ui_->tabWidget->setCurrentWidget(ui_->teLog);
+    ui_->teLog->append(QString::fromStdString(msg + "\n"));
 }
 
 }

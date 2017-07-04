@@ -106,5 +106,4 @@ namespace giskard_sim {
 
 		return AF(AF::Failure, "Updating of controller failed.");
 	}
-
 }

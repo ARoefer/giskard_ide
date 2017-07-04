@@ -37,6 +37,37 @@ namespace giskard_sim {
 		throw domain_error("Can't convert '" + path + "' to be package relative. No part of the path matches a package name.");
 	}
 
+	Eigen::Quaterniond fromEulerRad(Eigen::Vector3d ang) {
+        Eigen::Quaterniond out = Eigen::AngleAxisd(ang[0], Eigen::Vector3d::UnitX())
+                      * Eigen::AngleAxisd(ang[1], Eigen::Vector3d::UnitY())
+                      * Eigen::AngleAxisd(ang[2], Eigen::Vector3d::UnitZ());
+        return out;
+	}
+
+	Eigen::Quaterniond fromEulerDeg(Eigen::Vector3d ang) {
+		return fromEulerRad(ang * (M_PI / 180.0));
+	}
+
+	Eigen::Vector3d toEulerRad(Eigen::Quaterniond rot) {
+        return toEulerRad(rot.toRotationMatrix());
+	}
+
+	Eigen::Vector3d toEulerDeg(Eigen::Quaterniond rot) {
+		return toEulerDeg(rot.toRotationMatrix());
+	}
+
+    Eigen::Vector3d toEulerRad(Eigen::Matrix3d rot) {
+        return rot.eulerAngles(0, 1, 2);
+	}
+
+    Eigen::Vector3d toEulerDeg(Eigen::Matrix3d rot) {
+        return toEulerRad(rot) * (180.0 / M_PI);
+	}
+
+	Eigen::Affine3d makeAffine(Eigen::Vector3d position, Eigen::Quaterniond rotation) {
+		return Eigen::Affine3d(Eigen::Translation3d(position)) * Eigen::Affine3d(rotation);
+	}
+
     std_msgs::ColorRGBA rosColorRGBA(float r, float g, float b, float a) {
 		std_msgs::ColorRGBA out;
         out.r = r;
@@ -45,6 +76,8 @@ namespace giskard_sim {
 		out.a = a;
 		return out;
 	}
+
+    std_msgs::ColorRGBA rosColorRGBA(QColor color)  { return rosColorRGBA(color.redF(), color.greenF(), color.blueF(), color.alphaF()); }
 
 	geometry_msgs::Point rosPoint(double x, double y, double z) {
 		geometry_msgs::Point out;
@@ -68,4 +101,5 @@ namespace giskard_sim {
 		header.stamp = stamp;
 		return header;
 	}
+
 }

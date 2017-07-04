@@ -11,6 +11,11 @@
 
 #include <unordered_set>
 
+#include "giskard_sim/input_scalar_widget.h"
+#include "giskard_sim/input_vector_widget.h"
+#include "giskard_sim/input_rotation_widget.h"
+#include "giskard_sim/input_frame_widget.h"
+
 using namespace std;
 
 namespace giskard_sim
@@ -118,45 +123,106 @@ void ControllerWidget::onControllerLoaded(giskard_core::QPController* controller
         jointItems[*jIt] = pItem;
     }
 
-    map<std::string, const giskard_core::Scope::InputPtr&> inputs = controller->get_input_map();
-    int row = 0;
-    ui_->twInputs->setRowCount(inputs.size() - jointList.size());
-    for (auto it = inputs.begin(); it != inputs.end(); it++) {
-        if (it->second->get_type() == giskard_core::tJoint)
-            continue;
+    ui_->lwJoints->sortItems();
+}
 
-        auto iit = inputWidgets.find(it->first);
-        if (iit != inputWidgets.end()) {
-            iit->second.type->setText(typeToString(it->second->get_type()));
-            ui_->twInputs->setItem(row, 0, iit->second.name);
-            ui_->twInputs->setItem(row, 1, iit->second.type);
-            ui_->twInputs->setItem(row, 2, iit->second.value);
-            iit->second.row = row;
-        } else {
-            STableRow newRow;
-            newRow.name = new QTableWidgetItem(QString::fromStdString(it->first));
-            newRow.type = new QTableWidgetItem(typeToString(it->second->get_type()));
-            newRow.value = new QTableWidgetItem("lel");
-            newRow.row = row;
-
-            ui_->twInputs->setItem(row, 0, newRow.name);
-            ui_->twInputs->setItem(row, 1, newRow.type);
-            ui_->twInputs->setItem(row, 2, newRow.value);
-            inputWidgets[it->first] = newRow;
-        }
-        row++;
+void ControllerWidget::onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment) {
+  auto it = inputWidgets.find(assignment->name);
+  if (it != inputWidgets.end()) {
+    switch (assignment->getType()) {
+      case giskard_core::tScalar: {
+        InputScalarWidget* widget = dynamic_cast<InputScalarWidget*>(it->second.inputWidget);
+        if (!widget)
+          throw std::invalid_argument("[ControllerWidget] Flying input type change is not supported. Delete the input first! Input: '"+assignment->name + "'");
+          
+        widget->setValue(boost::dynamic_pointer_cast<IScalarAssignment>(assignment));
+      }
+      break;
+      case giskard_core::tVector3: {
+        InputVectorWidget* widget = dynamic_cast<InputVectorWidget*>(it->second.inputWidget);
+        if (!widget)
+          throw std::invalid_argument("[ControllerWidget] Flying input type change is not supported. Delete the input first! Input: '"+assignment->name + "'");
+          
+        widget->setValue(boost::dynamic_pointer_cast<IVectorAssignment>(assignment));
+      }
+      break;
+      case giskard_core::tRotation: {
+        InputRotationWidget* widget = dynamic_cast<InputRotationWidget*>(it->second.inputWidget);
+        if (!widget)
+          throw std::invalid_argument("[ControllerWidget] Flying input type change is not supported. Delete the input first! Input: '"+assignment->name + "'");
+          
+        widget->setValue(boost::dynamic_pointer_cast<IRotationAssignment>(assignment));
+      }
+      break;
+      case giskard_core::tFrame: {
+        InputFrameWidget* widget = dynamic_cast<InputFrameWidget*>(it->second.inputWidget);
+        if (!widget)
+          throw std::invalid_argument("[ControllerWidget] Flying input type change is not supported. Delete the input first! Input: '"+assignment->name + "'");
+          
+        widget->setValue(boost::dynamic_pointer_cast<IFrameAssignment>(assignment));
+      }
+      break;
+      default:
+      break;
     }
+  } else {
+    if (assignment->getType() == giskard_core::tJoint)
+      return;
 
-    auto it = inputWidgets.begin();
-    while (it != inputWidgets.end()) {
-        if (inputs.find(it->first) == inputs.end()) {
-//            delete it->second.name;
-//            delete it->second.type;
-//            delete it->second.value;
-            it = inputWidgets.erase(it);
-        } else
-            it++;
+    QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(assignment->name), ui_->inputList);
+    ui_->inputList->addItem(item);
+    switch (assignment->getType()) {
+      case giskard_core::tScalar: {
+        InputScalarWidget* widget = new InputScalarWidget(this, boost::dynamic_pointer_cast<IScalarAssignment>(assignment));
+        inputWidgets[assignment->name] = {item, widget};
+        ui_->inputList->setItemWidget(item, widget);
+        connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
+        item->setSizeHint(widget->sizeHint());
+      }
+      break;
+      case giskard_core::tVector3: {
+        InputVectorWidget* widget = new InputVectorWidget(this, boost::dynamic_pointer_cast<IVectorAssignment>(assignment));
+        inputWidgets[assignment->name] = {item, widget};
+        ui_->inputList->setItemWidget(item, widget);
+        connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
+        item->setSizeHint(widget->sizeHint());
+      }
+      break;
+      case giskard_core::tRotation: {
+        InputRotationWidget* widget = new InputRotationWidget(this, boost::dynamic_pointer_cast<IRotationAssignment>(assignment));
+        inputWidgets[assignment->name] = {item, widget};
+        ui_->inputList->setItemWidget(item, widget);
+        connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
+        item->setSizeHint(widget->sizeHint());
+      }
+      break;
+      case giskard_core::tFrame: {
+        InputFrameWidget* widget = new InputFrameWidget(this, boost::dynamic_pointer_cast<IFrameAssignment>(assignment));
+        inputWidgets[assignment->name] = {item, widget};
+        ui_->inputList->setItemWidget(item, widget);
+        connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
+        item->setSizeHint(widget->sizeHint());
+      }
+      break;
+      default:
+      break;
     }
+  }
+}
+
+void ControllerWidget::assignmentChanged(boost::shared_ptr<IInputAssignment> value) {
+  value->setScenario(pScenario);
+  pScenario->setInputAssignment(value);
+}
+
+void ControllerWidget::onInputAssignmentDeleted(const std::string& inputName) {
+  auto it = inputWidgets.find(inputName);
+  if (it != inputWidgets.end()) {
+    ui_->inputList->removeItemWidget(it->second.item);
+    delete it->second.inputWidget;
+    delete it->second.item;
+    inputWidgets.erase(it);
+  }
 }
 
 

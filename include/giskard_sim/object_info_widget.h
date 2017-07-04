@@ -1,4 +1,5 @@
 #pragma once
+#include "giskard_sim/datamodel.h"
 
 #include <QWidget>
 #include <eigen3/Eigen/Eigen>
@@ -19,8 +20,13 @@ public:
 
   ~ObjectInfoWidget();
 
+  virtual void setObject(SWorldObject obj);
+  SWorldObject getObject() const;
+
 protected:
   Ui::ObjectInfoWidget *ui_;
+
+  SWorldObject object;
 
 private:
   
@@ -30,6 +36,7 @@ private Q_SLOTS:
   void onPositionChanged(Eigen::Vector3d position);
   void onRotationChanged(Eigen::Vector3d rotation);
   void onColorChanged();
+  void onParentMaybeChanged();
   void onParentChanged(QString frame);
   void onVisualChanged(int type);
   void onNameChanged();

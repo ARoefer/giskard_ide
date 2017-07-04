@@ -2,6 +2,7 @@
 #include <ros/ros.h>
 #include <rviz/panel.h>
 #include "giskard_sim/interfaces.h"
+#include "giskard_sim/datamodel.h"
 
 namespace Ui
 {
@@ -32,6 +33,8 @@ public:
   void onPosesCleared();
   void onPosesLoaded();
   void onPoseRenamed(std::string oldName, std::string newName);
+
+  void setObject(SWorldObject object);
 
 protected:
   Ui::SimControls *ui_;

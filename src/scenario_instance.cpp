@@ -1,5 +1,6 @@
 #include "giskard_sim/scenario_instance.h"
 #include "giskard_sim/utils.h"
+//#include "giskard_sim/input_assignments.h"
 
 #include <iai_naive_kinematics_sim/SetJointState.h>
 
@@ -21,7 +22,7 @@ ScenarioInstance::ScenarioInstance()
 , errorListeners()
 , poseListeners()
 , runner(cmdPublisher)
-, intServer("giskard_marker_server")
+, intServer("giskard_marker_server", "", true)
 { 
     if(_currentInstance)
         ROS_ERROR("There should always only be one instance of giskard_sim::ScenarioInstance!");
@@ -42,6 +43,10 @@ ScenarioInstance::~ScenarioInstance() {
 void ScenarioInstance::update(const ros::TimerEvent& event) {
 	if (runner.isValid()) {
 		AF result = runner.updateController(lastJointState);
+        if(!result) {
+        	notifyRunControllerFailed(result);
+            setSimState(false);
+        }
 	}
 }
 
@@ -207,6 +212,7 @@ AF ScenarioInstance::loadController() {
 	}
 
 	notifyControllerLoaded();
+	validateInputAssignments();
 	return AF();
 }
 
@@ -401,28 +407,25 @@ Eigen::Affine3d ScenarioInstance::getObjectTransform(std::string object, std::st
 	return out;
 }
 
-AF ScenarioInstance::addSceneObject(std::string name) {
-	return addSceneObject(name, "odom_combined");
-}
+AF ScenarioInstance::addSceneObject(SWorldObject* pObject) {
+	SWorldObject object = *pObject;
+	cout << "Adding scene object: " << object.name 
+		 << "   Parent: " << object.parent << endl;
 
-AF ScenarioInstance::addSceneObject(std::string name, std::string parent) {
-	auto it = context.objects.find(name);
+	auto it = context.objects.find(object.name);
 	if (it == context.objects.end()) {
 		visualization_msgs::InteractiveMarker intMarker;
-		intMarker.header = rosHeader(parent, ros::Time(0));
-		intMarker.name = name;
+        intMarker.header = rosHeader(object.parent, ros::Time(0));
+		intMarker.name = object.name;
+        tf::poseEigenToMsg(object.transform, intMarker.pose);
 
-		visualization_msgs::Marker visual;
-		visual.type = visualization_msgs::Marker::CUBE;
-		visual.header = rosHeader(name, ros::Time(0));
-		visual.scale =  rosVec3(Vector3d(1,1,1) * 0.2);
-		visual.color = rosColorCyan();
+        object.visual.header = rosHeader(object.name, ros::Time(0));
 
 		visualization_msgs::InteractiveMarkerControl ctrl;
 		ctrl.always_visible = true;
-		ctrl.markers.push_back(visual);
+        ctrl.markers.push_back(object.visual);
 		intMarker.controls.push_back(ctrl);
-		interactiveMarkers[name] = intMarker;
+		interactiveMarkers[object.name] = intMarker;
 
         intServer.insert(intMarker, &ScenarioInstance::_processInteractiveMarkerFeedback);
 
@@ -446,6 +449,80 @@ void ScenarioInstance::_processInteractiveMarkerFeedback(const visualization_msg
         ScenarioInstance::_currentInstance->processInteractiveMarkerFeedback(feedback);
 }
 
+
+AF ScenarioInstance::setInputAssignment(boost::shared_ptr<IInputAssignment> assignment) {
+	try {
+        const giskard_core::Scope::InputPtr& input = controller.get_scope().find_input(assignment->name);
+		if (input->get_type() != assignment->getType())
+			return AF(AF::Failure, "Mismatched type of input assignment for '" + input->name_ + "'");
+
+		assignment->setScenario(this);
+        auto it = context.inputAssignments.find(assignment->name);
+        if (it == context.inputAssignments.end() || !it->second->equals(*assignment)) {
+			context.inputAssignments[assignment->name] = assignment;
+			notifyInputAssignmentChanged(assignment);
+		}
+	} catch (const std::exception& e) {
+		return AF(AF::Failure, e.what());
+	}
+	return AF();
+}
+
+AF ScenarioInstance::validateInputAssignments() {
+	auto inputMap = controller.get_input_map();
+
+	{
+	auto it = context.inputAssignments.begin();
+	while (it != context.inputAssignments.end()) {
+		auto fit = inputMap.find(it->first);
+		if (fit == inputMap.end() || fit->second->get_type() != it->second->getType()) {
+			notifyInputAssignmentDeleted(it->first);
+            it = context.inputAssignments.erase(it);
+		} else {
+            inputMap.erase(it->first);
+			it++;
+		}
+	}
+	}
+
+	for (auto it = inputMap.begin(); it != inputMap.end(); it++) {
+		switch(it->second->get_type()) {
+            case giskard_core::tScalar: {
+                AssignmentPtr a(new ConstScalarAssignment(it->first));
+				a->setScenario(this);
+				context.inputAssignments[a->name] = a;
+				notifyInputAssignmentChanged(a);
+			}
+			break;
+            case giskard_core::tVector3: {
+                AssignmentPtr a(new ConstVectorAssignment(it->first));
+				a->setScenario(this);
+				context.inputAssignments[a->name] = a;
+				notifyInputAssignmentChanged(a);
+			}
+			break;
+            case giskard_core::tRotation: {
+                AssignmentPtr a(new ConstRotationAssignment(it->first));
+				a->setScenario(this);
+				context.inputAssignments[a->name] = a;
+				notifyInputAssignmentChanged(a);
+			}
+			break;
+            case giskard_core::tFrame: {
+                AssignmentPtr a(new ConstFrameAssignment(it->first));
+				a->setScenario(this);
+				context.inputAssignments[a->name] = a;
+				notifyInputAssignmentChanged(a);
+			}
+			break;
+			default:
+			break;
+		}
+	}
+
+	return AF();
+}
+
 //////////////////////////// Listeners and Notifications /////////////////////////////////////////
 
 void ScenarioInstance::notifyLoadScenarioFailed(string msg) {
@@ -463,6 +540,11 @@ void ScenarioInstance::notifyLoadControllerFailed(string msg) {
 		(*it)->onLoadControllerFailed(msg);
 	for(auto it = controllerListeners.begin(); it != controllerListeners.end(); it++)
 		(*it)->onControllerLoadFailed(msg);
+}
+
+void ScenarioInstance::notifyRunControllerFailed(string msg) {
+	for(auto it = errorListeners.begin(); it != errorListeners.end(); it++)
+		(*it)->onRunControllerFailed(msg);
 }
 
 void ScenarioInstance::notifyURDFLoaded() {
@@ -557,6 +639,14 @@ void ScenarioInstance::removeScenarioListener(IScenarioListener* pList) {
 	scenarioListeners.erase(pList);
 }
 
+void ScenarioInstance::notifyInputAssignmentChanged(AssignmentPtr assignment) {
+	for(auto it = controllerListeners.begin(); it != controllerListeners.end(); it++)
+		(*it)->onInputAssignmentChanged(assignment);
+}
 
+void ScenarioInstance::notifyInputAssignmentDeleted(string name) {
+	for(auto it = controllerListeners.begin(); it != controllerListeners.end(); it++)
+		(*it)->onInputAssignmentDeleted(name);
+}
 
 }

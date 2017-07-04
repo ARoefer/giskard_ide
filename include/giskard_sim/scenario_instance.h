@@ -81,12 +81,13 @@ namespace giskard_sim {
 			return &context;
 		}
 
-                const ros::Publisher& getCommandPublisher() const {
+            const ros::Publisher& getCommandPublisher() const {
 			return cmdPublisher;
 		}
 
-		AF addSceneObject(std::string name);
-		AF addSceneObject(std::string name, std::string parent);
+		AF addSceneObject(SWorldObject* pObject);
+
+		AF setInputAssignment(boost::shared_ptr<IInputAssignment> assignment);
 
         virtual void update(const ros::TimerEvent& event);
 
@@ -110,6 +111,8 @@ namespace giskard_sim {
 		void removeScenarioListener(IScenarioListener* pList);
 
 	protected:
+		virtual AF validateInputAssignments();
+
 		virtual void notifyURDFLoaded();
 		virtual void notifyControllerLoaded();
 
@@ -118,12 +121,16 @@ namespace giskard_sim {
 		virtual void notifyLoadScenarioFailed(string msg);
 		virtual void notifyLoadURDFFailed(string msg);
 		virtual void notifyLoadControllerFailed(string msg);
+		virtual void notifyRunControllerFailed(string msg);
 
 		virtual void notifyPoseAdded(string pose);
 		virtual void notifyPoseRemoved(string pose);
 		virtual void notifyPosesCleared();
 		virtual void notifyPosesLoaded();
 		virtual void notifyPoseRenamed(string oldName, string newName);
+
+		virtual void notifyInputAssignmentChanged(AssignmentPtr assignment);
+		virtual void notifyInputAssignmentDeleted(string name);
 
 		virtual void processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
 

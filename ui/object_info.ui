@@ -193,8 +193,8 @@
    <slot>onScaleChanged(Eigen::Vector3d)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>240</x>
-     <y>135</y>
+     <x>337</x>
+     <y>166</y>
     </hint>
     <hint type="destinationlabel">
      <x>521</x>
@@ -209,8 +209,8 @@
    <slot>onPositionChanged(Eigen::Vector3d)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>146</x>
-     <y>153</y>
+     <x>243</x>
+     <y>187</y>
     </hint>
     <hint type="destinationlabel">
      <x>550</x>
@@ -225,8 +225,8 @@
    <slot>onRotationChanged(Eigen::Vector3d)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>245</x>
-     <y>173</y>
+     <x>342</x>
+     <y>208</y>
     </hint>
     <hint type="destinationlabel">
      <x>536</x>
@@ -241,8 +241,8 @@
    <slot>onColorChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>364</x>
-     <y>109</y>
+     <x>352</x>
+     <y>118</y>
     </hint>
     <hint type="destinationlabel">
      <x>544</x>
@@ -257,8 +257,8 @@
    <slot>onVisualChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>360</x>
-     <y>82</y>
+     <x>352</x>
+     <y>89</y>
     </hint>
     <hint type="destinationlabel">
      <x>566</x>
@@ -289,8 +289,8 @@
    <slot>onNameChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>380</x>
-     <y>19</y>
+     <x>352</x>
+     <y>28</y>
     </hint>
     <hint type="destinationlabel">
      <x>475</x>

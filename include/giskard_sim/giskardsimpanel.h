@@ -33,6 +33,7 @@ public:
   void onLoadScenarioFailed(const std::string& msg);
   void onLoadURDFFailed(const std::string& msg);
   void onLoadControllerFailed(const std::string& msg);
+  void onRunControllerFailed(const std::string& msg);
 
 protected:
   ScenarioInstance scenario;

@@ -1,26 +1,26 @@
-topic_jointStates: joint_states
 topic_jointCommands: /simulator/commands
-simulationSettings:
-  timeStep: 0.025
-  defaultPose: base_pose
-  useTimeStep: false
-  isRunning: false
-name: My Scenario
-urdfPath:
-  path: giskard_sim/robots/pr2.urdf
-  package: true
-poses:
-  base_pose:
-    robotName: pr2
-    positions:
-      l_wrist_roll_joint: 6.11927676151
-      l_forearm_roll_joint: 2.05374050704
-      r_forearm_roll_joint: 5.26860285279
-      r_wrist_roll_joint: 1.90604009753
-    name: base_pose
 inputAssignments:
   {}
+name: My Scenario
+urdfPath:
+  package: true
+  path: giskard_sim/robots/pr2.urdf
+simulationSettings:
+  useTimeStep: false
+  defaultPose: base_posture
+  timeStep: 0.025
+  isRunning: true
 service_setJointState: /simulator/set_joint_states
+poses:
+  base_posture:
+    name: base_posture
+    robotName: pr2
+    positions:
+      r_wrist_roll_joint: 1.90604009753
+      r_forearm_roll_joint: 5.26860285279
+      l_wrist_roll_joint: 6.11927676151
+      l_forearm_roll_joint: 2.05374050704
 controllerPath:
   package: true
-  path: giskard_sim/test_controllers/pr2_rotating_forearm.giskard
+  path: giskard_sim/test_controllers/pr2_l_cart_goal.giskard
+topic_jointStates: joint_states

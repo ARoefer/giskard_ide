@@ -35,14 +35,26 @@ void VectorWidget::setLabelTexts(std::string lX, std::string lY, std::string lZ)
   setLabelTexts(QString::fromStdString(lX), QString::fromStdString(lY), QString::fromStdString(lZ));
 }
 
-void VectorWidget::setVector(Eigen::Vector3d vector) {
-  x = vector[0];
-  y = vector[1];
-  z = vector[2];
+void VectorWidget::setVector(double _x, double _y, double _z) {
+  x = _x;
+  y = _y;
+  z = _z;
 
   ui_->leX->setText(QString::number(x));
   ui_->leY->setText(QString::number(y));
   ui_->leZ->setText(QString::number(z));
+}
+
+void VectorWidget::setVector(geometry_msgs::Point vector) {
+  setVector(vector.x, vector.y, vector.z);
+}
+
+void VectorWidget::setVector(geometry_msgs::Vector3 vector) {
+  setVector(vector.x, vector.y, vector.z);
+}
+
+void VectorWidget::setVector(Eigen::Vector3d vector) {
+  setVector(vector[0], vector[1], vector[2]);
 }
 
 void VectorWidget::setLabelTexts(QString lX, QString lY, QString lZ) {
@@ -58,6 +70,15 @@ void VectorWidget::showScaleSlider(bool bShow) {
 Eigen::Vector3d VectorWidget::getVectorEigen() {
   return Eigen::Vector3d(x,y,z);
 }
+
+geometry_msgs::Point VectorWidget::getRosPoint() {
+  return rosPoint(x,y,z);
+}
+
+geometry_msgs::Vector3 VectorWidget::getRosVector() {
+  return rosVec3(x,y,z);
+}
+
 
 void VectorWidget::onXChanged() {
   double tx = ui_->leX->text().toDouble();

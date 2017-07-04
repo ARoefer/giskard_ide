@@ -36,6 +36,9 @@ public:
   void onControllerLoaded(giskard_core::QPController* controller);
   void onControllerLoadFailed(const std::string& msg);
 
+  void onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment);
+  void onInputAssignmentDeleted(const std::string& inputName);
+
 protected:
   Ui::ControllerWidget *ui_;
 
@@ -47,14 +50,11 @@ private:
 
   std::unordered_map<std::string, QListWidgetItem*> jointItems;
 
-  struct STableRow {
-      STableRow() : name(0), type(0), value(0), row(0) {}
-      QTableWidgetItem* name;
-      QTableWidgetItem* type;
-      QTableWidgetItem* value;
-      int row;
+  struct SInputItem {
+    QListWidgetItem* item;
+    QWidget* inputWidget;
   };
-  std::unordered_map<std::string, STableRow> inputWidgets;
+  std::unordered_map<std::string, SInputItem> inputWidgets;
 
 private Q_SLOTS:
   // Q_SLOTS for interaction with buttons, etc.
@@ -63,6 +63,7 @@ private Q_SLOTS:
   void onSaveController();
   void useRelativePath(bool bRelative);
   void onControllerFileChanged();
+  void assignmentChanged(boost::shared_ptr<IInputAssignment> value);
 };
 
 }  // giskard_sim

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <eigen3/Eigen/Eigen>
+#include <boost/shared_ptr.hpp>
 
 namespace urdf {
 	class Model;
@@ -13,6 +14,8 @@ namespace giskard_core {
 
 namespace giskard_sim {
 	struct SPose;
+    struct SWorldObject;
+    struct IInputAssignment;
 
 	struct ActionFeedback {
 		enum Type {
@@ -54,6 +57,8 @@ namespace giskard_sim {
 	struct IControllerListener {
 		virtual void onControllerLoaded(giskard_core::QPController* controller) = 0;
 		virtual void onControllerLoadFailed(const std::string& msg) = 0;
+		virtual void onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment) = 0;
+		virtual void onInputAssignmentDeleted(const std::string& inputName) = 0;
 	};
 
 	struct IScenarioListener {
@@ -68,6 +73,7 @@ namespace giskard_sim {
 		virtual void onLoadScenarioFailed(const std::string& msg) = 0;
 		virtual void onLoadURDFFailed(const std::string& msg) = 0;
 		virtual void onLoadControllerFailed(const std::string& msg) = 0;
+		virtual void onRunControllerFailed(const std::string& msg) = 0;
 	};
 
 	struct IPoseListener {
@@ -109,8 +115,9 @@ namespace giskard_sim {
 		virtual AF setSimState(bool bRunning) = 0;
 		virtual AF resetSim() = 0;
 
-		virtual AF addSceneObject(std::string name) = 0;
-		virtual AF addSceneObject(std::string name, std::string parent) = 0;
+        virtual AF addSceneObject(SWorldObject* pObject) = 0;
+
+        virtual AF setInputAssignment(boost::shared_ptr<IInputAssignment> assignment) = 0;
 
 		virtual double getScalarObjectProperty(std::string object, std::string property) const = 0;
 		virtual Eigen::Vector3d getVectorObjectProperty(std::string object, std::string property) const = 0;

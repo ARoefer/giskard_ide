@@ -13,13 +13,14 @@ namespace giskard_sim {
 
 		void onControllerLoaded(giskard_core::QPController* _controller);
 		void onControllerLoadFailed(const std::string& msg);
+		void onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment) { initialized = false; }
+		void onInputAssignmentDeleted(const std::string& inputName) { }
 
 		inline bool isValid() {
 			return valid;
 		}
 
 		AF updateController(const sensor_msgs::JointState& jointState);
-
 	private:
 		const ros::Publisher& cmdPub;
 		giskard_core::QPController* controller;

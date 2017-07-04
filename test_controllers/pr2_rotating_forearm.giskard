@@ -18,7 +18,7 @@ scope = {
 	weightTorso = 0.001;
 	weightArm   = 0.001;
 
-	speed = 0.2;
+	speed = -0.6;
 
 	weightPositionGoal = 1;
 	weightRotationGoal = 4;

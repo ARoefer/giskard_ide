@@ -10,6 +10,8 @@ namespace giskard_sim {
 		ColorEditor(QWidget* parent = 0)
 		: prop()
 		, rviz::ColorEditor(&prop, parent) {}
+
+		QColor getColor() const { return prop.getColor(); }
 	
 	private:
 		rviz::ColorProperty prop;

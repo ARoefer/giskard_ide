@@ -2,6 +2,8 @@
 
 #include <QWidget>
 #include <eigen3/Eigen/Eigen>
+#include <geometry_msgs/Vector3.h>
+#include <geometry_msgs/Point.h>
 
 namespace Ui
 {
@@ -24,8 +26,14 @@ public:
   virtual void setLabelTexts(QString lX, QString lY, QString lZ);
   void setLabelTexts(std::string lX, std::string lY, std::string lZ);
 
+  virtual void setVector(geometry_msgs::Point vector);
+  virtual void setVector(geometry_msgs::Vector3 vector);
   virtual void setVector(Eigen::Vector3d vector);
-  virtual Eigen::Vector3d getVectorEigen();
+  virtual void setVector(double x, double y, double z);
+  
+  virtual Eigen::Vector3d        getVectorEigen();
+  virtual geometry_msgs::Point   getRosPoint();
+  virtual geometry_msgs::Vector3 getRosVector();
 
 Q_SIGNALS:
   void valueChanged(Eigen::Vector3d newValue);
