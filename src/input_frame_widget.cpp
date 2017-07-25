@@ -4,6 +4,8 @@
 
 #include "ui_input_frame_widget.h"
 
+#include <rviz/frame_manager.h>
+
 #include <QLineEdit>
 
 using namespace std;
@@ -11,7 +13,7 @@ using namespace std;
 namespace giskard_sim
 {
 
-InputFrameWidget::InputFrameWidget( QWidget* parent, ValuePtr _assignment)
+InputFrameWidget::InputFrameWidget( QWidget* parent, ValuePtr _assignment, rviz::FrameManager* _frameManager)
   : QWidget( parent )
   , ui_(new Ui::InputFrameWidget())
   , assignment(_assignment)
@@ -21,6 +23,8 @@ InputFrameWidget::InputFrameWidget( QWidget* parent, ValuePtr _assignment)
   ui_->labelName->setText(QString::fromStdString(assignment->name));
   ui_->constRotation->showScaleSlider(false);
   ui_->constPosition->showScaleSlider(false);
+
+  setFrameManager(_frameManager);
 
   connect(ui_->cbTargetFrame->lineEdit(), SIGNAL(editingFinished()), this, SLOT(dynamicFrameChanged()));
   connect(ui_->cbSourceFrame->lineEdit(), SIGNAL(editingFinished()), this, SLOT(dynamicRefFrameChanged()));
@@ -119,5 +123,9 @@ void InputFrameWidget::setConstant(bool bConst) {
   }
 }
 
+void InputFrameWidget::setFrameManager(rviz::FrameManager* frameManager) {
+  ui_->cbTargetFrame->setFrameManager(frameManager);
+  ui_->cbSourceFrame->setFrameManager(frameManager);
+}
 
 }

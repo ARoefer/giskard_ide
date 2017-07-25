@@ -16,6 +16,8 @@
 #include "giskard_sim/input_rotation_widget.h"
 #include "giskard_sim/input_frame_widget.h"
 
+#include <rviz/frame_manager.h>
+
 using namespace std;
 
 namespace giskard_sim
@@ -25,6 +27,7 @@ ControllerWidget::ControllerWidget( QWidget* parent )
   : QWidget( parent )
   , pScenario(0)
   , ui_(new Ui::ControllerWidget())
+  , frameManager(0)
 {
   // set up the GUI
   ui_->setupUi(this);
@@ -36,6 +39,22 @@ ControllerWidget::ControllerWidget( QWidget* parent )
 
 ControllerWidget::~ControllerWidget() {
     delete ui_;
+}
+
+void ControllerWidget::setFrameManager(rviz::FrameManager* fm) {
+    frameManager = fm;
+    for (auto it = inputWidgets.begin(); it != inputWidgets.end(); it++) {
+        if (dynamic_cast<InputVectorWidget*>(it->second.inputWidget)) {
+            InputVectorWidget* ptr = dynamic_cast<InputVectorWidget*>(it->second.inputWidget);
+            ptr->setFrameManager(frameManager);
+        } else if (dynamic_cast<InputFrameWidget*>(it->second.inputWidget)) {
+            InputFrameWidget* ptr = dynamic_cast<InputFrameWidget*>(it->second.inputWidget);
+            ptr->setFrameManager(frameManager);
+        } else if (dynamic_cast<InputRotationWidget*>(it->second.inputWidget)) {
+            InputRotationWidget* ptr = dynamic_cast<InputRotationWidget*>(it->second.inputWidget);
+            ptr->setFrameManager(frameManager);
+        }
+    }
 }
 
 void ControllerWidget::openLoadDialogue() {
@@ -181,7 +200,7 @@ void ControllerWidget::onInputAssignmentChanged(boost::shared_ptr<IInputAssignme
       }
       break;
       case giskard_core::tVector3: {
-        InputVectorWidget* widget = new InputVectorWidget(this, boost::dynamic_pointer_cast<IVectorAssignment>(assignment));
+        InputVectorWidget* widget = new InputVectorWidget(this, boost::dynamic_pointer_cast<IVectorAssignment>(assignment), frameManager);
         inputWidgets[assignment->name] = {item, widget};
         ui_->inputList->setItemWidget(item, widget);
         connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
@@ -189,7 +208,7 @@ void ControllerWidget::onInputAssignmentChanged(boost::shared_ptr<IInputAssignme
       }
       break;
       case giskard_core::tRotation: {
-        InputRotationWidget* widget = new InputRotationWidget(this, boost::dynamic_pointer_cast<IRotationAssignment>(assignment));
+        InputRotationWidget* widget = new InputRotationWidget(this, boost::dynamic_pointer_cast<IRotationAssignment>(assignment), frameManager);
         inputWidgets[assignment->name] = {item, widget};
         ui_->inputList->setItemWidget(item, widget);
         connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
@@ -197,7 +216,7 @@ void ControllerWidget::onInputAssignmentChanged(boost::shared_ptr<IInputAssignme
       }
       break;
       case giskard_core::tFrame: {
-        InputFrameWidget* widget = new InputFrameWidget(this, boost::dynamic_pointer_cast<IFrameAssignment>(assignment));
+        InputFrameWidget* widget = new InputFrameWidget(this, boost::dynamic_pointer_cast<IFrameAssignment>(assignment), frameManager);
         inputWidgets[assignment->name] = {item, widget};
         ui_->inputList->setItemWidget(item, widget);
         connect(widget, SIGNAL(inputChanged(boost::shared_ptr<IInputAssignment>)), this, SLOT(assignmentChanged(boost::shared_ptr<IInputAssignment>)));
@@ -225,6 +244,19 @@ void ControllerWidget::onInputAssignmentDeleted(const std::string& inputName) {
   }
 }
 
+void ControllerWidget::onInputsLoaded(const map<string, AssignmentPtr>& inputs) {
+  for (auto it = inputs.begin(); it != inputs.end(); it++)
+    onInputAssignmentChanged(it->second); 
+}
+
+void ControllerWidget::onInputsCleared() {
+  for (auto it = inputWidgets.begin(); it != inputWidgets.end(); it++) {
+    ui_->inputList->removeItemWidget(it->second.item);
+    delete it->second.inputWidget;
+    delete it->second.item;
+  }
+  inputWidgets.clear();
+}
 
 void ControllerWidget::onControllerLoadFailed(const std::string& msg) {
     string resPath = resolvePath(pScenario->getContext()->controllerPath);

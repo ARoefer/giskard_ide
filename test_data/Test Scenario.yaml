@@ -1,0 +1,178 @@
+poses:
+  Dumb Posture:
+    name: Dumb Posture
+    robotName: pr2
+    positions:
+      l_elbow_flex_joint: -1.984666439103634
+      l_forearm_roll_joint: 0.1705088497654696
+      l_shoulder_lift_joint: -0.2302845127466174
+      l_shoulder_pan_joint: -0.489057876168858
+      l_upper_arm_roll_joint: 0.3309518887048894
+      l_wrist_roll_joint: 6.11927676151
+      l_wrist_flex_joint: -0.5946057070660868
+      torso_lift_joint: 0.3221074199342005
+  Empty Posture:
+    name: Empty Posture
+    robotName: pr2
+    positions:
+      {}
+urdfPath:
+  package: true
+  path: giskard_sim/robots/pr2.urdf
+controllerPath:
+  path: giskard_sim/test_controllers/pr2_l_cart_goal.giskard
+  package: true
+name: Test Scenario
+topic_jointStates: "joint_states"
+topic_jointCommands: "/simulator/commands"
+service_setJointState: "/simulator/set_joint_states"
+simulationSettings:
+  timeStep: 0.025
+  useTimeStep: false
+  isRunning: false
+  defaultPose: Dumb Posture
+inputAssignments:
+  goal_pos:
+    target: base_link
+    name: goal_pos
+    object: r_elbow_flex_link
+    type: positionQuery
+sceneObjects:
+  foo:
+    name: foo
+    parent: head_pan_link
+    transform:
+      position:
+        x: 1.118216276168823
+        y: 1.00641393661499
+        z: -0.3299036026000977
+      rotation:
+        x: 0.2690229730415508
+        y: 0.8750249201078975
+        z: -0.2429309651252995
+        w: -0.3208466539475567
+    visual:
+      header:
+        frame_id: ""
+      ns: ""
+      id: 0
+      type: 1
+      action: 0
+      pose:
+        position:
+          x: 0
+          y: 0
+          z: 0
+        orientation:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+      scale:
+        x: 0.6000000000000001
+        y: 0.6000000000000001
+        z: 0.6000000000000001
+      color:
+        r: 1
+        g: 0.3411765
+        b: 0.2078431
+        a: 1
+      points:
+        []
+      colors:
+        []
+      text: ""
+      mesh_resource: ""
+      mesh_use_embedded_materials: false
+  bla:
+    name: bla
+    parent: base_link
+    transform:
+      position:
+        x: -6.866455078125e-05
+        y: -0.9864546060562134
+        z: 1.565067648887634
+      rotation:
+        x: 0.3825867170564793
+        y: 0.5946657649088295
+        z: 0.3825867170564796
+        w: 0.5946658186824659
+    visual:
+      header:
+        frame_id: ""
+      ns: ""
+      id: 0
+      type: 3
+      action: 0
+      pose:
+        position:
+          x: 0
+          y: 0
+          z: 0
+        orientation:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+      scale:
+        x: 0.5184000000000002
+        y: 0.5184000000000002
+        z: 0.5184000000000002
+      color:
+        r: 0
+        g: 0.3333333
+        b: 1
+        a: 1
+      points:
+        []
+      colors:
+        []
+      text: ""
+      mesh_resource: ""
+      mesh_use_embedded_materials: false
+  bar:
+    visual:
+      points:
+        []
+      colors:
+        []
+      text: ""
+      mesh_resource: ""
+      mesh_use_embedded_materials: false
+      header:
+        frame_id: ""
+      ns: ""
+      id: 0
+      type: 2
+      action: 0
+      pose:
+        position:
+          x: 0
+          y: 0
+          z: 0
+        orientation:
+          x: 0
+          y: 0
+          z: 0
+          w: 1
+      scale:
+        x: 0.2
+        y: 0.2
+        z: 0.2
+      color:
+        r: 1
+        b: 0
+        a: 1
+        g: 1
+    name: bar
+    parent: l_wrist_roll_link
+    transform:
+      position:
+        x: 0.0811743289232254
+        y: -0.01040548086166382
+        z: -0.0005043596029281616
+      rotation:
+        x: 0
+        y: 0
+        z: 0
+        w: 1

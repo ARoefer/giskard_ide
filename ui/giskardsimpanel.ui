@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabScenario">
       <property name="sizePolicy">
@@ -92,6 +92,77 @@
             <size>
              <width>20</width>
              <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Joint State Topic</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leJSTopic">
+            <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+            </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Command Topic</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leCmdTopic">
+            <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+            </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Set Posture Service</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leSPService">
+            <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+            </sizepolicy>
+            </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
@@ -204,5 +275,59 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>leJSTopic</sender>
+   <signal>editingFinished()</signal>
+   <receiver>GiskardSimPanel</receiver>
+   <slot>commandTopicChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>172</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>82</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leCmdTopic</sender>
+   <signal>editingFinished()</signal>
+   <receiver>GiskardSimPanel</receiver>
+   <slot>jsTopicChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>160</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>522</x>
+     <y>123</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leSPService</sender>
+   <signal>editingFinished()</signal>
+   <receiver>GiskardSimPanel</receiver>
+   <slot>spServiceChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>186</x>
+     <y>183</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>567</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>jsTopicChanged()</slot>
+  <slot>commandTopicChanged()</slot>
+  <slot>spServiceChanged()</slot>
+ </slots>
 </ui>

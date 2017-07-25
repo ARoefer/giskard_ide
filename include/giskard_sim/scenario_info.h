@@ -28,7 +28,11 @@ public:
   std::string getPath();
 
   void onScenarioLoaded(std::string path, const SScenarioContext* context);
-
+  void onObjectAdded(const SWorldObject& object) {};
+  void onObjectChanged(const SWorldObject& object) {};
+  void onObjectRemoved(const std::string& name) {};
+  void onSelectedObjectChanged(const std::string& selected) {};
+  
 protected:
   Ui::ScenarioInfo *ui_;
 

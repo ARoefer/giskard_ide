@@ -1,4 +1,4 @@
-<library path="lib/libgiskard_sim">
+<library path="lib/libgiskard_sim_UI">
 	<class name="Giskard Simulation Panel"
 		   type="giskard_sim::GiskardSimPanel"
 		   base_class_type="rviz::Panel">

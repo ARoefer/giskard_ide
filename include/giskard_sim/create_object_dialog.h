@@ -3,6 +3,10 @@
 
 #include <QDialog>
 
+namespace rviz {
+   class FrameManager;
+}
+
 namespace Ui
 {
 class CreateObjectDialog;
@@ -15,7 +19,7 @@ class CreateObjectDialog : public QDialog
 {
 Q_OBJECT
 public:
-  CreateObjectDialog( QWidget* parent = 0 );
+  CreateObjectDialog( QWidget* parent = 0, rviz::FrameManager* frameManager = 0);
 
   ~CreateObjectDialog();
 

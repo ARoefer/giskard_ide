@@ -25,6 +25,10 @@ namespace giskard_sim {
 		AF loadFromYAML(string path);
         AF renameScenario(std::string newName);
 
+		AF setPostureService(std::string serviceName);
+		AF setJointStateTopic(std::string topicName);
+		AF setCommandTopic(std::string topicName);
+
 		AF makeURDFRelative(bool bRelative);
         AF changeURDFPath(string& newPath);
         const urdf::Model* getURDFModel() {
@@ -81,11 +85,14 @@ namespace giskard_sim {
 			return &context;
 		}
 
-            const ros::Publisher& getCommandPublisher() const {
+		const ros::Publisher& getCommandPublisher() const {
 			return cmdPublisher;
 		}
 
 		AF addSceneObject(SWorldObject* pObject);
+		AF removeSceneObject(std::string objectName);
+		AF selectSceneObject(std::string objectName);
+		AF attachSceneObject(std::string objectName, std::string frame, bool keepTransform);
 
 		AF setInputAssignment(boost::shared_ptr<IInputAssignment> assignment);
 
@@ -98,6 +105,9 @@ namespace giskard_sim {
         void addURDFListener(IURDFListener* pList);
 		void removeURDFListener(IURDFListener* pList);
 		
+		void addTopicListener(ITopicListener* pList);
+		void removeTopicListener(ITopicListener* pList);
+
 		void addControllerListener(IControllerListener* pList);
 		void removeControllerListener(IControllerListener* pList);
 
@@ -116,7 +126,13 @@ namespace giskard_sim {
 		virtual void notifyURDFLoaded();
 		virtual void notifyControllerLoaded();
 
+		virtual void notifyTopicsChanged();
+
 		virtual void notifyScenarioLoaded(string path);
+		virtual void notifyObjectAdded(const SWorldObject& object);
+		virtual void notifyObjectChanged(const SWorldObject& object);
+		virtual void notifyObjectRemoved(const std::string& name);
+		virtual void notifySelectedObjectChanged(const std::string& selected);
 
 		virtual void notifyLoadScenarioFailed(string msg);
 		virtual void notifyLoadURDFFailed(string msg);
@@ -131,6 +147,8 @@ namespace giskard_sim {
 
 		virtual void notifyInputAssignmentChanged(AssignmentPtr assignment);
 		virtual void notifyInputAssignmentDeleted(string name);
+		virtual void notifyInputAssignmentsLoaded();
+		virtual void notifyInputAssignmentsCleared();
 
 		virtual void processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback);
 
@@ -148,14 +166,13 @@ namespace giskard_sim {
 		ros::Subscriber jsSubscriber;
 		ros::Timer updateTimer;
 		tf::TransformListener tfListener;
+		std::string selectedObject;
 	private:
 		AF loadController();
         AF makePathRelative(SFilePath& path, bool bRelative);
 
-
-        unordered_map<string, visualization_msgs::InteractiveMarker> interactiveMarkers;
-
 		unordered_set<IScenarioListener*> scenarioListeners;
+		unordered_set<ITopicListener*> topicListeners;
 		unordered_set<IURDFListener*> urdfListeners;
 		unordered_set<IControllerListener*> controllerListeners;
 		unordered_set<IErrorListener*> errorListeners;

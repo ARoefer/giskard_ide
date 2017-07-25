@@ -36,6 +36,7 @@ GiskardSimPanel::GiskardSimPanel( QWidget* parent )
   //connect( ui_->pushButton_stop, SIGNAL( clicked() ), this, SLOT( gui_button_stop() ));
 
   scenario.addErrorListener(this);
+  scenario.addTopicListener(this);
 
   ui_->scenarioInfoWidget->setScenario(&scenario);
   ui_->urdfWidget->setScenario(&scenario);
@@ -59,20 +60,26 @@ void GiskardSimPanel::load( const rviz::Config& config ) {
 
     QString scenarioPath;
     if (config.mapGetString("giskard_scenario_path", &scenarioPath)) {
-        scenario.loadFromYAML(scenarioPath.toStdString());
+        if (scenario.loadFromYAML(scenarioPath.toStdString())) {
+            int selectedIndex = 0;
+            if(config.mapGetInt( "selected_tab", &selectedIndex) && selectedIndex < ui_->tabWidget->count())
+                ui_->tabWidget->setCurrentIndex(selectedIndex);
+        }
+    } else {
+        ui_->tabWidget->setCurrentWidget(ui_->tabScenario);
     }
 }
 
 void GiskardSimPanel::save( rviz::Config config ) const {
     rviz::Panel::save( config );
-    string path = "";//ui_->scenarioInfoWidget->getPath();
+    string path = ui_->scenarioInfoWidget->getPath();
     if (path.empty()) {
         path = QDir::homePath().toStdString();
         path += "/.rviz/last_giskard_scenario.yaml";
     }
 
     config.mapSetValue( "giskard_scenario_path", QString::fromStdString(path));
-
+    config.mapSetValue( "selected_tab", ui_->tabWidget->currentIndex());
     YAML::Node node = YAML::Load("");
     const SScenarioContext* psc = scenario.getContext();
     node = (*(psc));
@@ -86,6 +93,9 @@ void GiskardSimPanel::onInitialize() {
 
     QString modelName = "Giskard Sim: Robot Model - DON'T TOUCH";
     QString intName = "Giskard Sim: Interactive Markers - DON'T TOUCH";
+
+    ui_->controllerWidget->setFrameManager(vis_manager_->getFrameManager());
+    ui_->sceneWidget->setFrameManager(vis_manager_->getFrameManager());
 
     for (int i = 0; i < pDG->numDisplays(); i++) {
         if (pDG->getDisplayAt(i)->getName() == modelName) {
@@ -124,6 +134,34 @@ void GiskardSimPanel::onRunControllerFailed(const std::string& msg) {
   ui_->tabWidget->setCurrentWidget(ui_->teLog);
     ui_->teLog->append(QString::fromStdString(msg + "\n"));
 }
+
+void GiskardSimPanel::onTopicsChanged() {
+    ui_->leSPService->setText(QString::fromStdString(scenario.getContext()->setJSService));
+    ui_->leJSTopic->setText(QString::fromStdString(scenario.getContext()->jsTopic));
+    ui_->leCmdTopic->setText(QString::fromStdString(scenario.getContext()->cmdTopic));
+}
+
+void GiskardSimPanel::spServiceChanged() {
+    std::string newService = ui_->leSPService->text().toStdString();
+    if (scenario.getContext()->setJSService != newService) {
+        scenario.setPostureService(newService);
+    }
+}
+
+void GiskardSimPanel::commandTopicChanged() {
+    std::string newTopic = ui_->leCmdTopic->text().toStdString();
+    if (scenario.getContext()->cmdTopic != newTopic) {
+        scenario.setCommandTopic(newTopic);
+    }
+}
+
+void GiskardSimPanel::jsTopicChanged() {
+    std::string newTopic = ui_->leJSTopic->text().toStdString();
+    if (scenario.getContext()->jsTopic != newTopic) {
+        scenario.setJointStateTopic(newTopic);
+    }
+}
+
 
 }
 

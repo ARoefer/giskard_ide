@@ -11,7 +11,7 @@ bool ConstScalarAssignment::equals(const IInputAssignment& other) const {
 }
 
 YAML::Node ConstScalarAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "constScalar";
 	node["value"] = value;
 	return node;
@@ -31,7 +31,7 @@ void ScalarPropertyAssignment::setScenario(IScenarioInstance* pScenario) {
 }
 
 YAML::Node ScalarPropertyAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "scalarProperty";
 	node["object"] = object;
 	node["property"] = property;
@@ -44,7 +44,7 @@ bool ConstVectorAssignment::equals(const IInputAssignment& other) const {
 }
 
 YAML::Node ConstVectorAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "constVector";
 	node["value"] = value;
 	return node;
@@ -64,7 +64,7 @@ void VectorPropertyAssignment::setScenario(IScenarioInstance* pScenario) {
 }
 
 YAML::Node VectorPropertyAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "vectorProperty";
 	node["object"] = object;
 	node["property"] = property;
@@ -84,7 +84,7 @@ void VectorPositionAssignment::setScenario(IScenarioInstance* pScenario) {
 }
 
 YAML::Node VectorPositionAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "positionQuery";
 	node["object"] = object;
 	node["target"] = target;
@@ -97,7 +97,7 @@ bool ConstRotationAssignment::equals(const IInputAssignment& other) const {
 }
 
 YAML::Node ConstRotationAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "constRotation";
 	node["value"] = value;
 	return node;
@@ -117,7 +117,7 @@ void RotationAssignment::setScenario(IScenarioInstance* pScenario) {
 }
 
 YAML::Node RotationAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "rotationQuery";
 	node["object"] = object;
 	node["target"] = target;
@@ -130,7 +130,7 @@ bool ConstFrameAssignment::equals(const IInputAssignment& other) const {
 }
 
 YAML::Node ConstFrameAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "constFrame";
 	node["value"] = value;
 	return node;
@@ -150,7 +150,7 @@ void FrameAssignment::setScenario(IScenarioInstance* pScenario) {
 }
 
 YAML::Node FrameAssignment::toYAML() const {
-	YAML::Node node;
+	YAML::Node node = IInputAssignment::toYAML();
 	node["type"] = "frameQuery";
 	node["object"] = object;
 	node["target"] = target;

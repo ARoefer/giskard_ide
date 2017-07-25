@@ -192,7 +192,16 @@ void PosesWidget::onPosesLoaded() {
 }
 
 void PosesWidget::onPoseRenamed(std::string oldName, std::string newName) {
-  
+  auto it = poseItems.find(oldName);
+  if (it == poseItems.end())
+    return;
+
+  auto it2 = poseItems.find(newName);
+  if (it2 != poseItems.end())
+      onPoseRemoved(newName);
+
+  poseItems[newName] = it->second;
+  poseItems.erase(oldName);
 }
 
 void PosesWidget::addEmptyPose() {

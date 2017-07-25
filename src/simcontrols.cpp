@@ -33,7 +33,7 @@ SimControls::~SimControls() {
     ui_->cboxStartPoses->setCurrentIndex(ui_->cboxStartPoses->findData(qPose));
     ui_->chkUseSimTime->setChecked(context->simSettings.bUseTimeStep);
     ui_->leSimTime->setText(QString::number(context->simSettings.timeStep));
-    updatePlayPauseBtn(!pScenario->getContext()->simSettings.bRunning);
+    updatePlayPauseBtn(pScenario->getContext()->simSettings.bRunning);
   }
 
   void SimControls::onPoseAdded(std::string pose) {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RosPkgFileSelector</class>
+ <widget class="QWidget" name="RosPkgFileSelector">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>317</width>
+    <height>52</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Package</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="giskard_sim::PkgComboBox" name="cbPkg"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>File</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="giskard_sim::PkgFileComboBox" name="cbFile">
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>giskard_sim::PkgFileComboBox</class>
+   <extends>QComboBox</extends>
+   <header>giskard_sim/pkg_file_combo_box.h</header>
+  </customwidget>
+  <customwidget>
+   <class>giskard_sim::PkgComboBox</class>
+   <extends>QComboBox</extends>
+   <header>giskard_sim/pkg_combo_box.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>cbPkg</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>RosPkgFileSelector</receiver>
+   <slot>packageChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>217</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbFile</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>RosPkgFileSelector</receiver>
+   <slot>fileChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>210</x>
+     <y>36</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>226</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>packageChanged(QString)</slot>
+  <slot>fileChanged(QString)</slot>
+ </slots>
+</ui>

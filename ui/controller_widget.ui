@@ -158,7 +158,11 @@
       </layout>
      </item>
      <item>
-      <widget class="QListWidget" name="inputList"/>
+      <widget class="QListWidget" name="inputList">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

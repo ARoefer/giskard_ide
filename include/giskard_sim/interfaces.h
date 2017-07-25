@@ -3,6 +3,7 @@
 #include <string>
 #include <eigen3/Eigen/Eigen>
 #include <boost/shared_ptr.hpp>
+#include <map>
 
 namespace urdf {
 	class Model;
@@ -59,10 +60,20 @@ namespace giskard_sim {
 		virtual void onControllerLoadFailed(const std::string& msg) = 0;
 		virtual void onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment) = 0;
 		virtual void onInputAssignmentDeleted(const std::string& inputName) = 0;
+        virtual void onInputsLoaded(const std::map<std::string, boost::shared_ptr<IInputAssignment>>& inputs) = 0;
+		virtual void onInputsCleared() = 0;
+	};
+
+	struct ITopicListener {
+		virtual void onTopicsChanged() = 0;
 	};
 
 	struct IScenarioListener {
 		virtual void onScenarioLoaded(std::string path, const SScenarioContext* context) = 0;
+		virtual void onObjectAdded(const SWorldObject& object) = 0;
+		virtual void onObjectChanged(const SWorldObject& object) = 0;
+		virtual void onObjectRemoved(const std::string& name) = 0;
+		virtual void onSelectedObjectChanged(const std::string& selected) = 0;
 	};
 
 	struct ISimulationListener {
@@ -87,6 +98,10 @@ namespace giskard_sim {
 	struct IScenarioInstance {
 		virtual AF loadFromYAML(std::string path) = 0;
 		virtual AF renameScenario(std::string newName) = 0;
+
+		virtual AF setPostureService(std::string serviceName) = 0;
+		virtual AF setJointStateTopic(std::string topicName) = 0;
+		virtual AF setCommandTopic(std::string topicName) = 0;
 
 		virtual AF makeURDFRelative(bool bRelative) = 0;
 		virtual AF changeURDFPath(std::string& newPath) = 0;
@@ -116,6 +131,9 @@ namespace giskard_sim {
 		virtual AF resetSim() = 0;
 
         virtual AF addSceneObject(SWorldObject* pObject) = 0;
+		virtual AF removeSceneObject(std::string objectName) = 0;
+		virtual AF selectSceneObject(std::string objectName) = 0;
+		virtual AF attachSceneObject(std::string objectName, std::string frame, bool keepTransform) = 0;
 
         virtual AF setInputAssignment(boost::shared_ptr<IInputAssignment> assignment) = 0;
 
@@ -130,6 +148,9 @@ namespace giskard_sim {
 		virtual void addURDFListener(IURDFListener* pList) = 0;
 		virtual void removeURDFListener(IURDFListener* pList) = 0;
 		
+		virtual void addTopicListener(ITopicListener* pList) = 0;
+		virtual void removeTopicListener(ITopicListener* pList) = 0;
+
 		virtual void addControllerListener(IControllerListener* pList) = 0;
 		virtual void removeControllerListener(IControllerListener* pList) = 0;
 

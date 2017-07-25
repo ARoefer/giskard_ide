@@ -126,19 +126,19 @@
         <item row="4" column="0" colspan="2">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Source Frame</string>
+           <string>Target Frame</string>
           </property>
          </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Target Frame</string>
+           <string>Source Frame</string>
           </property>
          </widget>
         </item>
         <item row="2" column="2">
-         <widget class="rviz::EditableComboBox" name="cbTargetFrame">
+         <widget class="giskard_sim::TfFrameComboBox" name="cbSourceFrame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -148,7 +148,7 @@
          </widget>
         </item>
         <item row="4" column="2">
-         <widget class="rviz::EditableComboBox" name="cbSourceFrame">
+         <widget class="giskard_sim::TfFrameComboBox" name="cbTargetFrame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -166,11 +166,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>rviz::EditableComboBox</class>
-   <extends>QComboBox</extends>
-   <header>rviz/properties/editable_combo_box.h</header>
-  </customwidget>
-  <customwidget>
    <class>giskard_sim::VectorWidget</class>
    <extends>QWidget</extends>
    <header>giskard_sim/vector_widget.h</header>
@@ -178,6 +173,11 @@
    <slots>
     <signal>valueChanged(Eigen::Vector3d)</signal>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>giskard_sim::TfFrameComboBox</class>
+   <extends>QComboBox</extends>
+   <header>giskard_sim/tf_combo_box.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -231,7 +231,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>cbTargetFrame</sender>
+   <sender>cbSourceFrame</sender>
    <signal>currentIndexChanged(QString)</signal>
    <receiver>InputFrameWidget</receiver>
    <slot>dynamicFrameChanged(QString)</slot>
@@ -247,7 +247,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>cbSourceFrame</sender>
+   <sender>cbTargetFrame</sender>
    <signal>currentIndexChanged(QString)</signal>
    <receiver>InputFrameWidget</receiver>
    <slot>dynamicRefFrameChanged(QString)</slot>

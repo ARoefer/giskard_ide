@@ -18,7 +18,7 @@ namespace giskard_sim
 {
 class RobotModelDisplay;
 
-class GiskardSimPanel: public rviz::Panel, public IErrorListener
+class GiskardSimPanel: public rviz::Panel, public IErrorListener, public ITopicListener
 {
 Q_OBJECT
 public:
@@ -29,6 +29,7 @@ public:
   void load( const rviz::Config& config );
   void save( rviz::Config config ) const;
   void onInitialize();
+  void onTopicsChanged();
 
   void onLoadScenarioFailed(const std::string& msg);
   void onLoadURDFFailed(const std::string& msg);
@@ -46,7 +47,9 @@ protected:
 private Q_SLOTS:
   // Q_SLOTS for interaction with buttons, etc.
 
-  // your custom stuff
+  void spServiceChanged();
+  void commandTopicChanged();
+  void jsTopicChanged();
 };
 
 }  // giskard_sim

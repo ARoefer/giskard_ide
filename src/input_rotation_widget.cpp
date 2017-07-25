@@ -6,12 +6,14 @@
 
 #include <QLineEdit>
 
+#include <rviz/frame_manager.h>
+
 using namespace std;
 
 namespace giskard_sim
 {
 
-InputRotationWidget::InputRotationWidget( QWidget* parent, ValuePtr _assignment)
+InputRotationWidget::InputRotationWidget( QWidget* parent, ValuePtr _assignment, rviz::FrameManager* _frameManager)
   : QWidget( parent )
   , ui_(new Ui::InputRotationWidget())
   , assignment(_assignment)
@@ -20,6 +22,8 @@ InputRotationWidget::InputRotationWidget( QWidget* parent, ValuePtr _assignment)
   ui_->setupUi(this);
   ui_->constRotation->showScaleSlider(false);
   ui_->labelName->setText(QString::fromStdString(assignment->name));
+
+  setFrameManager(_frameManager);
 
   connect(ui_->cbTargetFrame->lineEdit(), SIGNAL(editingFinished()), this, SLOT(dynamicFrameChanged()));
   connect(ui_->cbSourceFrame->lineEdit(), SIGNAL(editingFinished()), this, SLOT(dynamicRefFrameChanged()));
@@ -106,5 +110,9 @@ void InputRotationWidget::setConstant(bool bConst) {
   }
 }
 
+void InputRotationWidget::setFrameManager(rviz::FrameManager* frameManager) {
+  ui_->cbTargetFrame->setFrameManager(frameManager);
+  ui_->cbSourceFrame->setFrameManager(frameManager);
+}
 
 }

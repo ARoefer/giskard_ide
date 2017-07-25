@@ -66,14 +66,14 @@
        <item row="2" column="0">
         <widget class="QPushButton" name="btnSetSel">
          <property name="text">
-          <string>Set Selected Pose</string>
+          <string>Set Selected Posture</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QPushButton" name="btnAddCur">
          <property name="text">
-          <string>Add Current Pose</string>
+          <string>Add Current Posture</string>
          </property>
         </widget>
        </item>
@@ -87,7 +87,7 @@
        <item row="1" column="1">
         <widget class="QPushButton" name="btnAddEm">
          <property name="text">
-          <string>Add Empty Pose</string>
+          <string>Add Empty Posture</string>
          </property>
         </widget>
        </item>

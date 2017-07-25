@@ -9,6 +9,10 @@ namespace Ui
 class InputRotationWidget;
 }
 
+namespace rviz {
+  class FrameManager;
+}
+
 namespace giskard_sim
 {
 struct IInputAssignment;
@@ -19,10 +23,11 @@ class InputRotationWidget : public QWidget
 Q_OBJECT
 public:
   typedef typename boost::shared_ptr<giskard_sim::IRotationAssignment> ValuePtr;
-  InputRotationWidget( QWidget* parent, ValuePtr value );
+  InputRotationWidget( QWidget* parent, ValuePtr value, rviz::FrameManager* frameManager = 0);
 
   ~InputRotationWidget();
 
+  virtual void setFrameManager(rviz::FrameManager* frameManager);
   virtual void setValue(ValuePtr value);
   
   virtual ValuePtr getInput() const { return assignment; }
@@ -32,6 +37,7 @@ Q_SIGNALS:
 
 protected:
   Ui::InputRotationWidget *ui_;
+  rviz::FrameManager* frameManager;
 
 private:
   ValuePtr assignment;

@@ -9,7 +9,7 @@ project(giskard_sim)
 ## is used, also find other catkin packages
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-
+include(CMakeToolsHelpers OPTIONAL)
 find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
 include(${QT_USE_FILE})
 add_definitions(-DQT_NO_KEYWORDS)
@@ -30,7 +30,8 @@ set(QT_FORMS ${PROJECT_SOURCE_DIR}/ui/simcontrols.ui
              ${PROJECT_SOURCE_DIR}/ui/input_scalar_widget.ui
              ${PROJECT_SOURCE_DIR}/ui/input_vector_widget.ui
              ${PROJECT_SOURCE_DIR}/ui/input_rotation_widget.ui
-             ${PROJECT_SOURCE_DIR}/ui/input_frame_widget.ui)
+             ${PROJECT_SOURCE_DIR}/ui/input_frame_widget.ui
+             ${PROJECT_SOURCE_DIR}/ui/ros_pkg_file_selector.ui)
 set(QT_RESS ${PROJECT_SOURCE_DIR}/resources/giskard_sim.qrc)
 
 qt4_wrap_cpp(MOC_FILES
@@ -51,6 +52,10 @@ qt4_wrap_cpp(MOC_FILES
     include/${PROJECT_NAME}/input_vector_widget.h
     include/${PROJECT_NAME}/input_rotation_widget.h
     include/${PROJECT_NAME}/input_frame_widget.h
+    include/${PROJECT_NAME}/tf_combo_box.h
+    include/${PROJECT_NAME}/pkg_file_combo_box.h
+    include/${PROJECT_NAME}/pkg_combo_box.h
+    include/${PROJECT_NAME}/ros_pkg_file_selector.h
 )
 
 qt4_wrap_ui(QT_FORMS_HPP ${QT_FORMS})
@@ -62,11 +67,8 @@ set(SRC_FILES
     src/scenario_info.cpp
     src/urdf_info.cpp
     src/giskardsimpanel.cpp
-    src/scenario_instance.cpp
-    src/utils.cpp
     src/pose_tree_widget.cpp
     src/controller_widget.cpp
-    src/controller_runner.cpp
     src/vector_widget.cpp
     src/object_info_widget.cpp
     src/scene_widget.cpp
@@ -75,7 +77,10 @@ set(SRC_FILES
     src/input_vector_widget.cpp
     src/input_rotation_widget.cpp
     src/input_frame_widget.cpp
-    src/input_assignments.cpp
+    src/tf_combo_box.cpp
+    src/pkg_file_combo_box.cpp
+    src/pkg_combo_box.cpp
+    src/ros_pkg_file_selector.cpp
     ${MOC_FILES}
 )
 
@@ -111,13 +116,22 @@ include_directories(
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-add_library(${PROJECT_NAME} ${SRC_FILES} ${QT_FORMS_HPP} ${QT_RESOURCES})
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ) #${orocos_kdl_LIBRARIES}
-add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+# Actual simulation components
+add_library(${PROJECT_NAME} src/scenario_instance.cpp src/utils.cpp src/controller_runner.cpp src/input_assignments.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+
+# GUI Library
+add_library(${PROJECT_NAME}_UI ${SRC_FILES} ${QT_FORMS_HPP} ${QT_RESOURCES})
+target_link_libraries(${PROJECT_NAME}_UI ${PROJECT_NAME} ${catkin_LIBRARIES}) #${orocos_kdl_LIBRARIES}
+add_dependencies(${PROJECT_NAME}_UI ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+
+add_executable(interactionTest src/interactive_test.cpp) # ${SRC_FILES}
+target_link_libraries(interactionTest ${PROJECT_NAME} ${catkin_LIBRARIES})
+add_dependencies(interactionTest ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 ## Mark executables and/or libraries for installation
 install(TARGETS 
-  ${PROJECT_NAME}
+  ${PROJECT_NAME}_UI
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

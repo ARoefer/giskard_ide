@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>382</width>
+    <width>388</width>
     <height>300</height>
    </rect>
   </property>
@@ -109,7 +109,7 @@
       <item>
        <widget class="giskard_sim::ObjectInfoWidget" name="objectInfoWidget" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -146,6 +146,9 @@
    <extends>QWidget</extends>
    <header>giskard_sim/object_info_widget.h</header>
    <container>1</container>
+   <slots>
+    <signal>objectEdited(giskard_sim::SWorldObject)</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -162,7 +165,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>67</x>
-     <y>460</y>
+     <y>299</y>
     </hint>
    </hints>
   </connection>
@@ -178,7 +181,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>224</x>
-     <y>389</y>
+     <y>299</y>
     </hint>
    </hints>
   </connection>
@@ -194,7 +197,23 @@
     </hint>
     <hint type="destinationlabel">
      <x>152</x>
-     <y>459</y>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>objectInfoWidget</sender>
+   <signal>objectEdited(giskard_sim::SWorldObject)</signal>
+   <receiver>SceneWidget</receiver>
+   <slot>objectChanged(giskard_sim::SWorldObject)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>303</x>
+     <y>144</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>318</x>
+     <y>389</y>
     </hint>
    </hints>
   </connection>
@@ -203,5 +222,6 @@
   <slot>createObject()</slot>
   <slot>deleteObject()</slot>
   <slot>selectedObjectChanged()</slot>
+  <slot>objectChanged(giskard_sim::SWorldObject)</slot>
  </slots>
 </ui>

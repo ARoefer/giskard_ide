@@ -11,7 +11,11 @@ namespace giskard_sim {
 struct IInputAssignment : public IScenarioReference {
 	IInputAssignment(string _name) : name(_name) {}
 	virtual giskard_core::InputType getType() const = 0;
-	virtual YAML::Node toYAML() const = 0;
+	virtual YAML::Node toYAML() const { 
+                YAML::Node out = YAML::Load("");
+		out["name"] = name;
+                return out;
+	}
 	const string name;
 	virtual bool equals(const IInputAssignment& other) const;
 };

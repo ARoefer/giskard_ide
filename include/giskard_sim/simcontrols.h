@@ -27,6 +27,10 @@ public:
   void setScenario(IScenarioInstance* _pScenario);
 
   void onScenarioLoaded(std::string path, const SScenarioContext* context);
+  void onObjectAdded(const SWorldObject& object) { }
+  void onObjectChanged(const SWorldObject& object) { }
+  void onObjectRemoved(const std::string& name) { }
+  void onSelectedObjectChanged(const std::string& selected) { }
 
   void onPoseAdded(std::string pose);
   void onPoseRemoved(std::string pose);

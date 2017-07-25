@@ -15,6 +15,8 @@ namespace giskard_sim {
 		void onControllerLoadFailed(const std::string& msg);
 		void onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment) { initialized = false; }
 		void onInputAssignmentDeleted(const std::string& inputName) { }
+		void onInputsLoaded(const map<string, AssignmentPtr>& inputs) { };
+		void onInputsCleared() { };
 
 		inline bool isValid() {
 			return valid;

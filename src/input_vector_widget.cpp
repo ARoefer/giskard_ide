@@ -3,6 +3,7 @@
 
 #include "ui_input_vector_widget.h"
 
+#include <rviz/frame_manager.h>
 #include <QLineEdit>
 
 using namespace std;
@@ -10,7 +11,7 @@ using namespace std;
 namespace giskard_sim
 {
 
-InputVectorWidget::InputVectorWidget( QWidget* parent, ValuePtr _assignment)
+InputVectorWidget::InputVectorWidget( QWidget* parent, ValuePtr _assignment, rviz::FrameManager* _frameManager)
   : QWidget( parent )
   , ui_(new Ui::InputVectorWidget())
   , assignment(_assignment)
@@ -18,6 +19,8 @@ InputVectorWidget::InputVectorWidget( QWidget* parent, ValuePtr _assignment)
   // set up the GUI
   ui_->setupUi(this);
   setValue(assignment);
+
+  setFrameManager(_frameManager);
 
   connect(ui_->cbTargetFrame->lineEdit(), SIGNAL(editingFinished()), this, SLOT(dynamicFrameChanged()));
   connect(ui_->cbSourceFrame->lineEdit(), SIGNAL(editingFinished()), this, SLOT(dynamicRefFrameChanged()));
@@ -101,5 +104,9 @@ void InputVectorWidget::setConstant(bool bConst) {
   }
 }
 
+void InputVectorWidget::setFrameManager(rviz::FrameManager* frameManager) {
+  ui_->cbTargetFrame->setFrameManager(frameManager);
+  ui_->cbSourceFrame->setFrameManager(frameManager);
+}
 
 }

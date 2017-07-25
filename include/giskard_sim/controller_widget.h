@@ -14,6 +14,10 @@ namespace Ui
 class ControllerWidget;
 }
 
+namespace rviz {
+  class FrameManager;
+}
+
 class QFileSystemWatcher;
 class QListWidgetItem;
 class QTableWidgetItem;
@@ -32,15 +36,19 @@ public:
 
   ~ControllerWidget();
 
+  void setFrameManager(rviz::FrameManager* frameManager);
   void setScenario(IScenarioInstance* _pScenario);
   void onControllerLoaded(giskard_core::QPController* controller);
   void onControllerLoadFailed(const std::string& msg);
 
   void onInputAssignmentChanged(boost::shared_ptr<IInputAssignment> assignment);
   void onInputAssignmentDeleted(const std::string& inputName);
+  void onInputsLoaded(const std::map<std::string, boost::shared_ptr<IInputAssignment>>& inputs);
+  void onInputsCleared();
 
 protected:
   Ui::ControllerWidget *ui_;
+  rviz::FrameManager* frameManager;
 
 private:
   IScenarioInstance* pScenario;

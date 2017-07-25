@@ -21,7 +21,7 @@ VectorWidget::VectorWidget( QWidget* parent )
   // set up the GUI
   ui_->setupUi(this);
 
-  DecisiveDoubleValidator* dVal = new DecisiveDoubleValidator(-10000.0, 10000.0, 6, this);
+  DecisiveDoubleValidator* dVal = new DecisiveDoubleValidator(-10000.0, 10000.0, 3, this);
   ui_->leX->setValidator(dVal);
   ui_->leY->setValidator(dVal);
   ui_->leZ->setValidator(dVal);

@@ -4,12 +4,65 @@
 
 #include <iai_naive_kinematics_sim/SetJointState.h>
 
-#include <giskard_core/giskard_parser.hpp>
+//#include <giskard_core/giskard_parser.hpp>
 #include <tf_conversions/tf_eigen.h>
 
 using namespace Eigen;
+using namespace visualization_msgs;
 
 namespace giskard_sim {
+
+void add6DOFControls(InteractiveMarker& intMarker, bool bFixed = true, bool bVisible = false) {
+	InteractiveMarkerControl control;
+
+	if (bFixed) {
+		control.orientation_mode = InteractiveMarkerControl::FIXED;
+	}
+
+	if (!bVisible)
+		control.interaction_mode = InteractiveMarkerControl::NONE;	
+
+	control.always_visible = true;
+
+	control.orientation.w = 1;
+    control.orientation.x = 1;
+    control.orientation.y = 0;
+    control.orientation.z = 0;
+    control.name = "rotate_x";
+	if (bVisible)
+    	control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+    intMarker.controls.push_back(control);
+    control.name = "move_x";
+    if (bVisible)
+		control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+    intMarker.controls.push_back(control);
+
+    control.orientation.w = 1;
+    control.orientation.x = 0;
+    control.orientation.y = 1;
+    control.orientation.z = 0;
+    control.name = "rotate_z";
+    if (bVisible)
+		control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+    intMarker.controls.push_back(control);
+    control.name = "move_z";
+    if (bVisible)
+		control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+    intMarker.controls.push_back(control);
+
+    control.orientation.w = 1;
+    control.orientation.x = 0;
+    control.orientation.y = 0;
+    control.orientation.z = 1;
+    control.name = "rotate_y";
+    if (bVisible)
+		control.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+    intMarker.controls.push_back(control);
+    control.name = "move_y";
+    if (bVisible)
+		control.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+    intMarker.controls.push_back(control);
+}
 
 // INPORTANT FOR SINGELTON WORK AROUND
 ScenarioInstance* ScenarioInstance::_currentInstance = 0;
@@ -57,6 +110,7 @@ void ScenarioInstance::jointStateCB(const sensor_msgs::JointState& js) {
 AF ScenarioInstance::loadFromYAML(string path) {
     context.poses.clear();
     notifyPosesCleared();
+    notifyInputAssignmentsCleared();
 
     try {
 		YAML::Node node = YAML::LoadFile(path);
@@ -67,7 +121,7 @@ AF ScenarioInstance::loadFromYAML(string path) {
 		cmdPublisher = nh.advertise<sensor_msgs::JointState>(context.cmdTopic, 1);
 		jsSubscriber = nh.subscribe(context.jsTopic, 1, &ScenarioInstance::jointStateCB, this);
 	} catch (const YAML::Exception& e) {
-		notifyLoadScenarioFailed(e.what());
+        notifyLoadScenarioFailed("Error while loading scenario from '"+path+"':"+e.what());
 		return AF(AF::Error, e.what());
 	}
 
@@ -77,9 +131,18 @@ AF ScenarioInstance::loadFromYAML(string path) {
 		return AF(AF::Error, errorMsg);
 	}
 
-	notifyURDFLoaded();
+	auto objects = context.objects;
+	context.objects.clear();
+	for (auto it = objects.begin(); it != objects.end(); it++) {
+		addSceneObject(it->second.get());
+	}
+
+    setSimState(context.simSettings.bRunning);
+	notifyTopicsChanged();
     notifyPosesLoaded();
+    //notifyURDFLoaded();
     loadController();
+    notifyInputAssignmentsLoaded();
     notifyScenarioLoaded(path);
 	return AF();
 }
@@ -91,6 +154,27 @@ AF ScenarioInstance::renameScenario(std::string newName) {
     context.name = newName;
     return AF();
 }
+
+AF ScenarioInstance::setPostureService(std::string serviceName) {
+	context.setJSService = serviceName;
+	notifyTopicsChanged();
+	return AF();
+}
+
+AF ScenarioInstance::setJointStateTopic(std::string topicName) {
+	context.jsTopic = topicName;
+	jsSubscriber = nh.subscribe(context.jsTopic, 1, &ScenarioInstance::jointStateCB, this);
+	notifyTopicsChanged();
+	return AF();
+}
+
+AF ScenarioInstance::setCommandTopic(std::string topicName) {
+	context.cmdTopic = topicName;
+	cmdPublisher = nh.advertise<sensor_msgs::JointState>(context.cmdTopic, 1);
+	notifyTopicsChanged();
+	return AF();
+}
+
 
 AF ScenarioInstance::makePathRelative(SFilePath& path, bool bRelative) {
 	if (!path.packageRelative && bRelative) {
@@ -182,7 +266,7 @@ AF ScenarioInstance::loadController() {
             return AF(AF::Failure, msg + e.what());
       	}
 	} else {
-		try {
+/* 		try {
             std::ifstream t(path);
 			std::string fileStr;
 
@@ -201,7 +285,7 @@ AF ScenarioInstance::loadController() {
 		} catch (giskard_core::GiskardLangParser::ParseException e) {
             notifyLoadControllerFailed(msg + e.what());
 			return AF(AF::Failure, msg + e.what());
-		}            
+		}   */          
 	}
 
 	try {
@@ -409,42 +493,154 @@ Eigen::Affine3d ScenarioInstance::getObjectTransform(std::string object, std::st
 
 AF ScenarioInstance::addSceneObject(SWorldObject* pObject) {
 	SWorldObject object = *pObject;
-	cout << "Adding scene object: " << object.name 
-		 << "   Parent: " << object.parent << endl;
 
+	object.visual.header = rosHeader("", ros::Time(0));
+	
 	auto it = context.objects.find(object.name);
 	if (it == context.objects.end()) {
-		visualization_msgs::InteractiveMarker intMarker;
-        intMarker.header = rosHeader(object.parent, ros::Time(0));
+		InteractiveMarker intMarker;
+		intMarker.header = rosHeader(object.parent, ros::Time(0));
 		intMarker.name = object.name;
-        tf::poseEigenToMsg(object.transform, intMarker.pose);
+		tf::poseEigenToMsg(object.transform, intMarker.pose);
 
-        object.visual.header = rosHeader(object.name, ros::Time(0));
-
-		visualization_msgs::InteractiveMarkerControl ctrl;
+		InteractiveMarkerControl ctrl;
+		ctrl.name = "visual";
 		ctrl.always_visible = true;
-        ctrl.markers.push_back(object.visual);
+		ctrl.markers.push_back(object.visual);
+		ctrl.orientation.w = 1;
+		ctrl.interaction_mode = InteractiveMarkerControl::MOVE_3D;
 		intMarker.controls.push_back(ctrl);
-		interactiveMarkers[object.name] = intMarker;
+		intMarker.scale = 1;
+		add6DOFControls(intMarker, true);
 
-        intServer.insert(intMarker, &ScenarioInstance::_processInteractiveMarkerFeedback);
+		context.objects[object.name] = boost::shared_ptr<SWorldObject>(new SWorldObject(object));   
 
+		intServer.insert(intMarker, &ScenarioInstance::_processInteractiveMarkerFeedback);
 		// 'commit' changes and send to all clients
-        intServer.applyChanges();
+		intServer.applyChanges();
+		notifyObjectAdded(object);
 	} else {
-
+		InteractiveMarker m;
+		if (intServer.get(object.name, m)) {
+			it->second = boost::shared_ptr<SWorldObject>(new SWorldObject(object));
+			for(size_t i = 0; i < m.controls.size(); i++) {
+				if (m.controls[i].name == "visual") {
+					m.controls[i].markers[0] = object.visual;
+					break;
+				}
+			}
+			m.header.frame_id = object.parent;
+			tf::poseEigenToMsg(object.transform, m.pose);
+			intServer.insert(m, &ScenarioInstance::_processInteractiveMarkerFeedback);
+			intServer.applyChanges();
+			notifyObjectChanged(object);
+		}
 	}
     return AF();
 }
 
-void ScenarioInstance::processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback )
-{
-  ROS_INFO_STREAM( feedback->marker_name << " is now at "
-      << feedback->pose.position.x << ", " << feedback->pose.position.y
-      << ", " << feedback->pose.position.z );
+AF ScenarioInstance::removeSceneObject(std::string objectName) {
+	if (context.objects.find(objectName) != context.objects.end()) {
+		context.objects.erase(objectName);
+		intServer.erase(objectName);
+		intServer.applyChanges();
+		notifyObjectRemoved(objectName);
+	}
+
+	selectedObject = "";
+	
+	return AF();
 }
 
-void ScenarioInstance::_processInteractiveMarkerFeedback(const visualization_msgs::InteractiveMarkerFeedbackConstPtr &feedback) {
+AF ScenarioInstance::selectSceneObject(std::string objectName) {
+
+	bool changed = false;
+	if (!selectedObject.empty() && selectedObject != objectName) {
+		InteractiveMarker m;
+		if (intServer.get(selectedObject, m)) {
+			for (size_t i = 0; i < m.controls.size(); i++) {
+				InteractiveMarkerControl& c = m.controls[i];
+				if (c.name.find("rotate") != std::string::npos 
+				   || c.name.find("move") != std::string::npos)
+					c.interaction_mode = InteractiveMarkerControl::NONE;
+			}
+			changed = true;
+			intServer.insert(m, &ScenarioInstance::_processInteractiveMarkerFeedback);
+		}
+	}
+
+
+	if (selectedObject != objectName && !objectName.empty()) {
+		InteractiveMarker m;
+		if (intServer.get(objectName, m)) {
+			for (size_t i = 0; i < m.controls.size(); i++) {
+				InteractiveMarkerControl& c = m.controls[i];
+				if (c.name.find("rotate") != std::string::npos)
+					c.interaction_mode = InteractiveMarkerControl::ROTATE_AXIS;
+
+				if (c.name.find("move") != std::string::npos)
+					c.interaction_mode = InteractiveMarkerControl::MOVE_AXIS;
+			}
+			changed = true;
+			intServer.insert(m, &ScenarioInstance::_processInteractiveMarkerFeedback);
+		} else {
+			if (changed)
+				intServer.applyChanges();
+			return AF(AF::Failure, "Can't select non existant object '" + objectName + "'.");
+		}	
+	}
+
+	if (changed) {
+		selectedObject = objectName;
+		intServer.applyChanges();
+		notifySelectedObjectChanged(selectedObject);
+	}
+	
+	return AF();
+}
+
+AF ScenarioInstance::attachSceneObject(std::string objectName, std::string frame, bool keepTransform) {
+	auto it = context.objects.find(objectName);
+	if (it != context.objects.end()) {
+		SWorldObject updatedObject = *(it->second);
+		if (!keepTransform) {
+			Affine3d refT = getObjectTransform(updatedObject.parent, frame);
+			updatedObject.transform = refT * updatedObject.transform;
+		}
+		updatedObject.parent = frame;
+		addSceneObject(&updatedObject);
+
+		return AF();
+	}
+	return AF(AF::Failure, "Unknown object '" + objectName + "'");
+}
+
+
+void ScenarioInstance::processInteractiveMarkerFeedback(const InteractiveMarkerFeedbackConstPtr &feedback )
+{
+  switch (feedback->event_type) {
+	case InteractiveMarkerFeedback::MOUSE_DOWN: {
+		if (context.objects.find(feedback->marker_name) != context.objects.end() && selectedObject != feedback->marker_name) {
+			selectSceneObject(feedback->marker_name);
+		}
+	}
+	break;
+	case InteractiveMarkerFeedback::POSE_UPDATE: {
+		auto it = context.objects.find(feedback->marker_name);
+		if (it != context.objects.end()) {
+			tf::poseMsgToEigen(feedback->pose, it->second->transform);
+			if (it->first != selectedObject)
+				selectSceneObject(feedback->marker_name);
+			notifyObjectChanged(*(it->second));
+		}
+	}
+	break;
+	default:
+		break;
+  }
+}
+
+void ScenarioInstance::_processInteractiveMarkerFeedback(const InteractiveMarkerFeedbackConstPtr &feedback) {
     if (ScenarioInstance::_currentInstance)
         ScenarioInstance::_currentInstance->processInteractiveMarkerFeedback(feedback);
 }
@@ -594,6 +790,46 @@ void ScenarioInstance::notifyScenarioLoaded(string path) {
 	}	
 }
 
+void ScenarioInstance::notifyObjectAdded(const SWorldObject& object) {
+	for(auto it = scenarioListeners.begin(); it != scenarioListeners.end(); it++) {
+		(*it)->onObjectAdded(object);
+	}
+}
+
+void ScenarioInstance::notifyObjectChanged(const SWorldObject& object) {
+	for(auto it = scenarioListeners.begin(); it != scenarioListeners.end(); it++) {
+		(*it)->onObjectChanged(object);
+	}
+}
+
+void ScenarioInstance::notifyObjectRemoved(const std::string& name) {
+	for(auto it = scenarioListeners.begin(); it != scenarioListeners.end(); it++) {
+		(*it)->onObjectRemoved(name);
+	}
+}
+
+void ScenarioInstance::notifySelectedObjectChanged(const std::string& selected) {
+	for(auto it = scenarioListeners.begin(); it != scenarioListeners.end(); it++) {
+		(*it)->onSelectedObjectChanged(selected);
+	}
+}
+
+void ScenarioInstance::notifyTopicsChanged() {
+	for(auto it = topicListeners.begin(); it != topicListeners.end(); it++) {
+		(*it)->onTopicsChanged();
+	}
+}
+
+void ScenarioInstance::addTopicListener(ITopicListener* pList) {
+	if (pList)
+		topicListeners.insert(pList);
+}
+
+void ScenarioInstance::removeTopicListener(ITopicListener* pList) {
+	topicListeners.erase(pList);
+}
+
+
 void ScenarioInstance::addErrorListener(IErrorListener* pList) {
 	if (pList)
 		errorListeners.insert(pList);
@@ -647,6 +883,16 @@ void ScenarioInstance::notifyInputAssignmentChanged(AssignmentPtr assignment) {
 void ScenarioInstance::notifyInputAssignmentDeleted(string name) {
 	for(auto it = controllerListeners.begin(); it != controllerListeners.end(); it++)
 		(*it)->onInputAssignmentDeleted(name);
+}
+
+void ScenarioInstance::notifyInputAssignmentsLoaded() {
+	for(auto it = controllerListeners.begin(); it != controllerListeners.end(); it++)
+		(*it)->onInputsLoaded(context.inputAssignments);
+}
+
+void ScenarioInstance::notifyInputAssignmentsCleared() {
+	for(auto it = controllerListeners.begin(); it != controllerListeners.end(); it++)
+		(*it)->onInputsCleared();
 }
 
 }

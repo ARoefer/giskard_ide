@@ -9,6 +9,10 @@ namespace Ui
 class InputVectorWidget;
 }
 
+namespace rviz {
+  class FrameManager;
+}
+
 namespace giskard_sim
 {
 struct IInputAssignment;
@@ -19,10 +23,11 @@ class InputVectorWidget : public QWidget
 Q_OBJECT
 public:
     typedef typename boost::shared_ptr<giskard_sim::IVectorAssignment> ValuePtr;
-  InputVectorWidget( QWidget* parent, ValuePtr value );
+  InputVectorWidget( QWidget* parent, ValuePtr value, rviz::FrameManager* frameManager = 0);
 
   ~InputVectorWidget();
 
+  virtual void setFrameManager(rviz::FrameManager* frameManager);
   virtual void setValue(ValuePtr value);
   
   virtual ValuePtr getInput() const { return assignment; }
@@ -35,6 +40,7 @@ protected:
 
 private:
   ValuePtr assignment;
+  rviz::FrameManager* frameManager;
 
 private Q_SLOTS:
   // Q_SLOTS for interaction with buttons, etc.
