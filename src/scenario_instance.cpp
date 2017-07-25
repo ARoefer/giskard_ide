@@ -265,8 +265,8 @@ AF ScenarioInstance::loadController() {
             notifyLoadControllerFailed(msg + e.what());
             return AF(AF::Failure, msg + e.what());
       	}
-	} else {
-/* 		try {
+	} /* else {
+ 		try {
             std::ifstream t(path);
 			std::string fileStr;
 
@@ -285,8 +285,8 @@ AF ScenarioInstance::loadController() {
 		} catch (giskard_core::GiskardLangParser::ParseException e) {
             notifyLoadControllerFailed(msg + e.what());
 			return AF(AF::Failure, msg + e.what());
-		}   */          
-	}
+		}             
+	} */
 
 	try {
 		controller = giskard_core::generate(spec);
@@ -629,6 +629,9 @@ void ScenarioInstance::processInteractiveMarkerFeedback(const InteractiveMarkerF
 		auto it = context.objects.find(feedback->marker_name);
 		if (it != context.objects.end()) {
 			tf::poseMsgToEigen(feedback->pose, it->second->transform);
+			tf::Transform tfTrans;
+			tf::transformEigenToTF(it->second->transform, tfTrans);
+			tfBroadcaster.sendTransform(tf::StampedTransform(tfTrans, ros::Time::now(), it->second->parent, it->second->name));
 			if (it->first != selectedObject)
 				selectSceneObject(feedback->marker_name);
 			notifyObjectChanged(*(it->second));

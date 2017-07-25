@@ -8,6 +8,7 @@
 #include "giskard_sim/controller_runner.h"
 
 #include <tf/transform_listener.h>
+#include <tf/transform_broadcaster.h>
 
 #include <unordered_set>
 #include <unordered_map>
@@ -166,6 +167,7 @@ namespace giskard_sim {
 		ros::Subscriber jsSubscriber;
 		ros::Timer updateTimer;
 		tf::TransformListener tfListener;
+		tf::TransformBroadcaster tfBroadcaster;
 		std::string selectedObject;
 	private:
 		AF loadController();

@@ -59,7 +59,7 @@ void ObjectInfoWidget::setObject(SWorldObject obj) {
       ui_->cbUseMaterial->setEnabled(false);
   }
 
-  Eigen::Vector3d rpy = toEulerDeg(object.transform.rotation());
+  Eigen::Vector3d rpy = toEulerRad(object.transform.rotation());
 
   ui_->vwRotation->setVector(rpy);
   ui_->btnColor->setStyleSheet("background-color: "+ QString::fromStdString(toRGBACSS(object.visual.color)));
@@ -90,7 +90,7 @@ void ObjectInfoWidget::onPositionChanged(Eigen::Vector3d position) {
 }
 
 void ObjectInfoWidget::onRotationChanged(Eigen::Vector3d rotation) {
-  Eigen::Affine3d rot(fromEulerDeg(rotation));
+  Eigen::Affine3d rot(fromEulerRad(rotation));
   object.transform = ((Eigen::Translation3d) object.transform.translation()) * rot;
 
   Q_EMIT objectEdited(object);
