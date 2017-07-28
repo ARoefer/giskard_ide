@@ -94,6 +94,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf_conversions
   eigen_conversions
   interactive_markers
+  iai_naive_kinematics_sim
 )
 
 catkin_package(
