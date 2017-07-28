@@ -115,7 +115,7 @@
          <item>
           <widget class="QLabel" name="labelStartPose">
            <property name="text">
-            <string>Start Pose</string>
+            <string>Initial Posture</string>
            </property>
           </widget>
          </item>
@@ -135,6 +135,9 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QCheckBox" name="chkUseSimTime">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Use Simulated Timestep</string>
            </property>
