@@ -90,7 +90,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rviz
   giskard_core
-  iai_naive_kinematics_sim
   tf
   tf_conversions
   eigen_conversions
@@ -98,7 +97,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES rviz_affordance_template_panel #${KDL_LIBRARY}
+  LIBRARIES #${KDL_LIBRARY}
   CATKIN_DEPENDS geometry_msgs roscpp rviz
   DEPENDS system_lib #orocos_kdl
 )
