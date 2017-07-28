@@ -126,10 +126,6 @@ add_library(${PROJECT_NAME}_UI ${SRC_FILES} ${QT_FORMS_HPP} ${QT_RESOURCES})
 target_link_libraries(${PROJECT_NAME}_UI ${PROJECT_NAME} ${catkin_LIBRARIES}) #${orocos_kdl_LIBRARIES}
 add_dependencies(${PROJECT_NAME}_UI ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
-add_executable(interactionTest src/interactive_test.cpp) # ${SRC_FILES}
-target_link_libraries(interactionTest ${PROJECT_NAME} ${catkin_LIBRARIES})
-add_dependencies(interactionTest ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
-
 ## Mark executables and/or libraries for installation
 install(TARGETS 
   ${PROJECT_NAME}_UI
