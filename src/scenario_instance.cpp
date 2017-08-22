@@ -84,7 +84,7 @@ ScenarioInstance::ScenarioInstance()
 	cmdPublisher = nh.advertise<sensor_msgs::JointState>(context.cmdTopic, 1);
 	jsSubscriber = nh.subscribe(context.jsTopic, 1, &ScenarioInstance::jointStateCB, this);
     updateTimer = nh.createTimer(ros::Duration(0.04), &ScenarioInstance::update, this);
-    updateTimer.stop();
+    //updateTimer.stop();
     runner.setScenario(this);
 }
 
@@ -94,12 +94,20 @@ ScenarioInstance::~ScenarioInstance() {
 }
 
 void ScenarioInstance::update(const ros::TimerEvent& event) {
-	if (runner.isValid()) {
+	if (context.simSettings.bRunning && runner.isValid()) {
 		AF result = runner.updateController(lastJointState);
         if(!result) {
         	notifyRunControllerFailed(result);
             setSimState(false);
         }
+	}
+
+	if (context.objects.size() > 0) {
+		for (auto it = context.objects.begin(); it != context.objects.end(); it++) {
+			tf::Transform tfTrans;
+			tf::transformEigenToTF(it->second->transform, tfTrans);
+			tfBroadcaster.sendTransform(tf::StampedTransform(tfTrans, ros::Time::now(), it->second->parent, it->second->name));
+		}
 	}
 }
 
@@ -470,10 +478,10 @@ AF ScenarioInstance::setSimUseTimestep(bool bUse) {
 
 AF ScenarioInstance::setSimState(bool bRunning) {
 	context.simSettings.bRunning = bRunning;
-    if (bRunning)
-        updateTimer.start();
-    else
-        updateTimer.stop();
+    // if (bRunning)
+    //     updateTimer.start();
+    // else
+    //     updateTimer.stop();
 	return AF();
 }
 
@@ -629,9 +637,6 @@ void ScenarioInstance::processInteractiveMarkerFeedback(const InteractiveMarkerF
 		auto it = context.objects.find(feedback->marker_name);
 		if (it != context.objects.end()) {
 			tf::poseMsgToEigen(feedback->pose, it->second->transform);
-			tf::Transform tfTrans;
-			tf::transformEigenToTF(it->second->transform, tfTrans);
-			tfBroadcaster.sendTransform(tf::StampedTransform(tfTrans, ros::Time::now(), it->second->parent, it->second->name));
 			if (it->first != selectedObject)
 				selectSceneObject(feedback->marker_name);
 			notifyObjectChanged(*(it->second));
