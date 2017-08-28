@@ -10,6 +10,7 @@ namespace urdf {
 }
 
 namespace giskard_core {
+	class QPControllerSpec;
 	class QPController;
 }
 

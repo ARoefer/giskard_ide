@@ -3,8 +3,10 @@
 #include <urdf/model.h>
 #include <ros/ros.h>
 #include <interactive_markers/interactive_marker_server.h>
+#include <pluginlib/class_loader.h>
 
 #include "giskard_core/giskard_core.hpp"
+#include "giskard_sim/plugin_interfaces.h"
 #include "giskard_sim/controller_runner.h"
 
 #include <tf/transform_listener.h>
@@ -169,6 +171,9 @@ namespace giskard_sim {
 		tf::TransformListener tfListener;
 		tf::TransformBroadcaster tfBroadcaster;
 		std::string selectedObject;
+
+		pluginlib::ClassLoader<IGiskardParser> parserLoader;
+		std::map<std::string, std::vector<boost::shared_ptr<IGiskardParser>>> parsers; // Suffix -> [Parser]
 	private:
 		AF loadController();
         AF makePathRelative(SFilePath& path, bool bRelative);

@@ -119,7 +119,9 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # Actual simulation components
 add_library(${PROJECT_NAME} src/scenario_instance.cpp src/utils.cpp src/controller_runner.cpp src/input_assignments.cpp)
+add_library(${PROJECT_NAME}_plugins src/default_plugins.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_plugins ${catkin_LIBRARIES})
 
 # GUI Library
 add_library(${PROJECT_NAME}_UI ${SRC_FILES} ${QT_FORMS_HPP} ${QT_RESOURCES})
@@ -129,14 +131,21 @@ add_dependencies(${PROJECT_NAME}_UI ${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 ## Mark executables and/or libraries for installation
 install(TARGETS 
   ${PROJECT_NAME}_UI
+  ${PROJECT_NAME}_plugins
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+# install(TARGETS 
+# ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+# LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+# RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 install(FILES
   plugin_description.xml
+  default_plugins.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

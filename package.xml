@@ -62,5 +62,6 @@
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <rviz plugin="${prefix}/plugin_description.xml"/>
+    <giskard_sim plugin="${prefix}/default_plugins.xml"/>
   </export>
 </package>

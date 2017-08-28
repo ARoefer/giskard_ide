@@ -187,6 +187,38 @@
     </hint>
    </hints>
   </connection>
+    <connection>
+   <sender>cbSourceFrame</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InputFrameWidget</receiver>
+   <slot>dynamicRefFrameChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>342</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>360</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cbTargetFrame</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>InputFrameWidget</receiver>
+   <slot>dynamicFrameChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>193</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>setConstant(bool)</slot>

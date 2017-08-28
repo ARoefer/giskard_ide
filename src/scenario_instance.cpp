@@ -76,6 +76,7 @@ ScenarioInstance::ScenarioInstance()
 , poseListeners()
 , runner(cmdPublisher)
 , intServer("giskard_marker_server", "", true)
+, parserLoader("giskard_sim", "giskard_sim::IGiskardParser")
 { 
     if(_currentInstance)
         ROS_ERROR("There should always only be one instance of giskard_sim::ScenarioInstance!");
@@ -85,7 +86,20 @@ ScenarioInstance::ScenarioInstance()
 	jsSubscriber = nh.subscribe(context.jsTopic, 1, &ScenarioInstance::jointStateCB, this);
     updateTimer = nh.createTimer(ros::Duration(0.04), &ScenarioInstance::update, this);
     //updateTimer.stop();
-    runner.setScenario(this);
+	runner.setScenario(this);
+	
+	std::vector<std::string> parserOptions = parserLoader.getDeclaredClasses();
+	for (size_t i = 0; i < parserOptions.size(); i++) {
+		try {
+			boost::shared_ptr<IGiskardParser> parser = parserLoader.createInstance(parserOptions[i]);
+			std::string suffix = parser->getFileSuffix();
+			std::transform(suffix.begin(), suffix.end(), suffix.begin(), ::tolower);
+			parsers[suffix].push_back(parser);
+			ROS_INFO("Found giskard parser: %s, suffix '.%s'", parser->getName().c_str(), parser->getFileSuffix().c_str());
+		} catch (pluginlib::PluginlibException& ex) {
+			ROS_ERROR("Loading of a parser plugin failed. Error: %s", ex.what());
+		}
+	}
 }
 
 ScenarioInstance::~ScenarioInstance() {
@@ -262,42 +276,40 @@ AF ScenarioInstance::changeControllerPath(std::string& newPath) {
 
 AF ScenarioInstance::loadController() {
 	string path = resolvePath(context.controllerPath);
-	giskard_core::QPControllerSpec spec;
     string msg = "Error while parsing '" + path + "':\n"; 
 	
-	if (path.find(".yaml") != string::npos) {
+	string suffix = path.substr(path.rfind('.') + 1);
+	std::transform(suffix.begin(), suffix.end(), suffix.begin(), ::tolower);
+	auto it = parsers.find(suffix);
+
+	if (it == parsers.end()) {
+		notifyLoadControllerFailed(msg + "No parser found to parse files with suffix '" + suffix + "'");
+		return AF(AF::Failure, msg+ "No parser found to parse files with suffix '" + suffix + "'");
+	}
+
+	bool success = false;
+	giskard_core::QPControllerSpec controllerSpec;
+	vector<string> errorBacklog;
+	for (size_t i = 0; i < it->second.size() && !success; i++) {
 		try {
-	        YAML::Node node = YAML::LoadFile(path);
-	        spec = node.as<giskard_core::QPControllerSpec>();
-    	} catch (const YAML::Exception& e) {
-            notifyLoadControllerFailed(msg + e.what());
-            return AF(AF::Failure, msg + e.what());
-      	}
-	} /* else {
- 		try {
-            std::ifstream t(path);
-			std::string fileStr;
+			controllerSpec = it->second[i]->loadFromFile(path);
+			success = true;
+    	} catch (const std::exception& e) {
+			errorBacklog.push_back(it->second[i]->getName() + " -------------\n" + e.what());
+		}
+	} 
 
-			t.seekg(0, std::ios::end);   
-			fileStr.reserve(t.tellg());
-			t.seekg(0, std::ios::beg);
-
-			fileStr.assign((std::istreambuf_iterator<char>(t)),
-			            std::istreambuf_iterator<char>());
-
-			giskard_core::GiskardLangParser glParser;
-			spec = glParser.parseQPController(fileStr);
-		} catch (giskard_core::GiskardLangParser::EOSException e) {
-            notifyLoadControllerFailed(msg + e.what());
-			return AF(AF::Failure, msg + e.what()); 
-		} catch (giskard_core::GiskardLangParser::ParseException e) {
-            notifyLoadControllerFailed(msg + e.what());
-			return AF(AF::Failure, msg + e.what());
-		}             
-	} */
-
+	if (!success) {
+		for (size_t i = 0; i < errorBacklog.size(); i++) {
+			msg += errorBacklog[i];
+			msg += '\n';
+		}
+		notifyLoadControllerFailed(msg);
+		return AF(AF::Failure, msg);
+	}
+	
 	try {
-		controller = giskard_core::generate(spec);
+		controller = giskard_core::generate(controllerSpec);
 	} catch (std::exception e) {
         notifyLoadControllerFailed(msg + e.what());
 		return AF(AF::Failure, msg + e.what()); 

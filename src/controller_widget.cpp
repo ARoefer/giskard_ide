@@ -58,7 +58,7 @@ void ControllerWidget::setFrameManager(rviz::FrameManager* fm) {
 }
 
 void ControllerWidget::openLoadDialogue() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Controller"), "~/", tr("Giskard Controllers (*.yaml *.giskard)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Controller"), "~/", tr("*"));
     std::cout << "Selected file: " << fileName.toUtf8().constData() << std::endl;
     if (!fileName.isEmpty()) {
         string stdPath = fileName.toStdString();

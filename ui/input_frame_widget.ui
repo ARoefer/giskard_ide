@@ -234,7 +234,7 @@
    <sender>cbSourceFrame</sender>
    <signal>currentIndexChanged(QString)</signal>
    <receiver>InputFrameWidget</receiver>
-   <slot>dynamicFrameChanged(QString)</slot>
+   <slot>dynamicRefFrameChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
@@ -250,7 +250,7 @@
    <sender>cbTargetFrame</sender>
    <signal>currentIndexChanged(QString)</signal>
    <receiver>InputFrameWidget</receiver>
-   <slot>dynamicRefFrameChanged(QString)</slot>
+   <slot>dynamicFrameChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>213</x>
