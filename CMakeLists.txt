@@ -100,7 +100,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES #${KDL_LIBRARY}
-  CATKIN_DEPENDS geometry_msgs roscpp rviz
+  CATKIN_DEPENDS geometry_msgs roscpp rviz iai_naive_kinematics_sim
   DEPENDS system_lib #orocos_kdl
 )
 
