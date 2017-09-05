@@ -1,0 +1,9 @@
+<library path="lib/libgiskard_sim_plugins">
+	<class name="Giskard YAML Parser"
+		   type="giskard_sim::StdGiskardYAMLParser"
+		   base_class_type="giskard_sim::IGiskardParser">
+		<description>
+			A wrapper around the standard YAML parser provided by the giskard library.
+		</description>
+	</class>
+</library>
