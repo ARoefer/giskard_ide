@@ -119,6 +119,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # Actual simulation components
 add_library(${PROJECT_NAME} src/scenario_instance.cpp src/utils.cpp src/controller_runner.cpp src/input_assignments.cpp)
+add_dependencies(${PROJECT_NAME} iai_naive_kinematics_sim_generate_messages_cpp)
 add_library(${PROJECT_NAME}_plugins src/default_plugins.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_plugins ${catkin_LIBRARIES})

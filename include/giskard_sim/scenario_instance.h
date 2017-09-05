@@ -136,6 +136,7 @@ namespace giskard_sim {
 		virtual void notifyObjectChanged(const SWorldObject& object);
 		virtual void notifyObjectRemoved(const std::string& name);
 		virtual void notifySelectedObjectChanged(const std::string& selected);
+		virtual void notifyObjectsCleared();
 
 		virtual void notifyLoadScenarioFailed(string msg);
 		virtual void notifyLoadURDFFailed(string msg);

@@ -130,9 +130,10 @@ void ScenarioInstance::jointStateCB(const sensor_msgs::JointState& js) {
 }
 
 AF ScenarioInstance::loadFromYAML(string path) {
-    context.poses.clear();
+    context.clear();
     notifyPosesCleared();
     notifyInputAssignmentsCleared();
+    notifyObjectsCleared();
 
     try {
 		YAML::Node node = YAML::LoadFile(path);
@@ -149,8 +150,9 @@ AF ScenarioInstance::loadFromYAML(string path) {
 
 	if (!urdfModel.initFile(resolvePath(context.urdfPath))) {
 		string errorMsg = "Can't load URDF referenced by "+context.urdfPath.toString();
+		//context.clear();
 		notifyLoadURDFFailed(errorMsg);
-		return AF(AF::Error, errorMsg);
+		//return AF(AF::Error, errorMsg);
 	}
 
 	auto objects = context.objects;
@@ -832,6 +834,12 @@ void ScenarioInstance::notifySelectedObjectChanged(const std::string& selected) 
 	for(auto it = scenarioListeners.begin(); it != scenarioListeners.end(); it++) {
 		(*it)->onSelectedObjectChanged(selected);
 	}
+}
+
+void ScenarioInstance::notifyObjectsCleared() {
+	for(auto it = scenarioListeners.begin(); it != scenarioListeners.end(); it++) {
+		(*it)->onObjectsCleared();
+	}	
 }
 
 void ScenarioInstance::notifyTopicsChanged() {

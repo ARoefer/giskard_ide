@@ -31,6 +31,7 @@ public:
   void onObjectChanged(const SWorldObject& object);
   void onObjectRemoved(const std::string& name);
   void onSelectedObjectChanged(const std::string& selected);
+  void onObjectsCleared();
 
 public Q_SLOTS:
   void spawnObject(SWorldObject object);

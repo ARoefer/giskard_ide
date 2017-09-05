@@ -87,6 +87,12 @@ namespace giskard_sim {
 
 		// Services
 		string setJSService;
+
+		virtual void clear() {
+			poses.clear();
+			inputAssignments.clear();
+			objects.clear();
+		}
 	};
 }
 

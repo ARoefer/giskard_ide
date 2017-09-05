@@ -75,6 +75,7 @@ namespace giskard_sim {
 		virtual void onObjectChanged(const SWorldObject& object) = 0;
 		virtual void onObjectRemoved(const std::string& name) = 0;
 		virtual void onSelectedObjectChanged(const std::string& selected) = 0;
+		virtual void onObjectsCleared() = 0;
 	};
 
 	struct ISimulationListener {

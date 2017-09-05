@@ -101,6 +101,12 @@ void SceneWidget::objectChanged(SWorldObject object) {
   }
 }
 
+void SceneWidget::onObjectsCleared() {
+  ui_->listWidget->clear();
+  ui_->objectInfoWidget->setEnabled(false);
+  selected = "";
+}
+
 void SceneWidget::setScenario(IScenarioInstance* _pScenario) {
   pScenario = _pScenario;
   pScenario->addScenarioListener(this);
